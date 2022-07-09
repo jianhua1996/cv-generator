@@ -1,6 +1,12 @@
 <template lang="">
   <div class="main-stage" v-drop="handleDropOnContainer">
-    <div class="drag-wrapper--in-stage" v-for="(item, index) in compoListWillRender" :key="index" :data-index="index">
+    <div
+      class="drag-wrapper--in-stage"
+      v-for="(item, index) in compoListWillRender"
+      :key="index"
+      :data-index="index"
+      v-dragstart="{ fn: handleDragStart, dataX: index }"
+    >
       <component :is="item.compo"></component>
     </div>
   </div>
@@ -11,7 +17,16 @@ import cComList from './c-components/index.js'; //  所有c-组件
 
 const compoListWillRender = inject('compoListWillRender');
 
-// function handleDragStart(e, index) {}
+function handleDragStart(e, index) {
+  // debugger;
+  const o = {
+    type: 'move',
+    data: {
+      index
+    }
+  };
+  e.dataTransfer.setData('application/json', JSON.stringify(o));
+}
 
 function handleDropOnContainer(e) {
   // drop事件触发
@@ -23,15 +38,15 @@ function handleDropOnContainer(e) {
       addCompoToStage(e, transferData.data);
     } else {
       // 从右侧拖拽，移动元素
+      moveCompo(e, transferData.data);
     }
   } catch (err) {
     console.error(err, 'JSON: 转换失败');
   }
 }
 
-function addCompoToStage(e, _data) {
-  const srcCompo = cComList.find(item => item.name === _data.name); // 找到源组件
-
+function commonPutCompoFn(e, srcCompo) {
+  // debugger;
   if (e.path[0].className === 'main-stage') {
     // 当前容器没有放置组件
     return compoListWillRender.value.push(srcCompo);
@@ -51,6 +66,16 @@ function addCompoToStage(e, _data) {
   }
   // debugger;
   compoListWillRender.value.splice(index, 0, srcCompo);
+}
+
+function addCompoToStage(e, _data) {
+  const srcCompo = cComList.find(item => item.name === _data.name); // 找到源组件
+  commonPutCompoFn(e, srcCompo);
+}
+
+function moveCompo(e, _data) {
+  const srcCompo = compoListWillRender.value.splice(_data.index, 1)[0];
+  commonPutCompoFn(e, srcCompo);
 }
 </script>
 <style lang="scss">
