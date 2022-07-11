@@ -46,7 +46,7 @@ function handleDropOnContainer(e) {
   }
 }
 
-function commonPutCompoFn(e, srcCompo) {
+function commonPutCompoFn(e, srcCompo, _data) {
   // debugger;
   if (e.path[0].className.includes('main-stage')) {
     // 当前容器没有放置组件
@@ -62,26 +62,28 @@ function commonPutCompoFn(e, srcCompo) {
 
   targetEl.classList.remove('__drag-active'); // 移除active类
 
-  // console.log(e.offsetY, targetEl.offsetHeight); // e.offsetY 是鼠标距离drop触发元素顶部的值；
-  let { index } = targetEl.dataset;
-  console.log(index, '放置的index');
-  if (e.offsetY * 2 > targetEl.offsetHeight) {
-    // 鼠标偏下，应该在下一个索引的位置添加组件
-    index = Number(index) + 1;
+  // console.log(e.layerY, targetEl.offsetHeight); // e.layerY 是鼠标距离drop触发元素顶部的值；
+  let index = Number(targetEl.dataset.index);
+
+  if (typeof _data.index === 'number' && _data.index < index) {
+    index = index - 1; // 由于上一步 删除元素后并没有立即更新视图，所以实际上触发元素的index是没有前移的，这里手动前移一位
   }
   // debugger;
+  if (e.layerY * 2 > targetEl.offsetHeight) {
+    // 鼠标偏下，应该在下一个索引的位置添加组件
+    index = index + 1;
+  }
   compoListWillRender.value.splice(index, 0, srcCompo);
 }
 
 function addCompoToStage(e, _data) {
   const srcCompo = cComList.find(item => item.name === _data.name); // 找到源组件
-  commonPutCompoFn(e, srcCompo);
+  commonPutCompoFn(e, srcCompo, _data);
 }
 
 function moveCompo(e, _data) {
-  console.log(_data.index, '拖动的index');
   const srcCompo = compoListWillRender.value.splice(_data.index, 1)[0];
-  commonPutCompoFn(e, srcCompo);
+  commonPutCompoFn(e, srcCompo, _data);
 }
 
 function commonToggleDragActiveClass(e) {
