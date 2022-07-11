@@ -38,14 +38,14 @@ const waterMark = reactive({
 provide('compoListWillRender', ref([]));
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .main-wrapper {
   display: flex;
   min-height: 800px;
-  padding: 0 20px;
+  padding: 0 12px;
   box-sizing: border-box;
   .left {
-    width: 300px;
+    width: 260px;
   }
   .right {
     flex: 1;

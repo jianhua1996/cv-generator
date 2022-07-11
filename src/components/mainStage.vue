@@ -1,22 +1,34 @@
 <template lang="">
-  <div class="main-stage" v-drop="handleDropOnContainer" @dragenter="handleDragEnter" @dragleave="handleDragLeave">
-    <div
-      class="drag-wrapper--in-stage"
-      v-for="(item, index) in compoListWillRender"
-      :key="index"
-      :data-index="index"
-      v-dragstart="{ fn: handleDragStart, dataX: index }"
-    >
-      <component :is="item.compo"></component>
-      <span class="debug-el">{{ index }}</span>
+  <div class="main-stage-wrapper">
+    <div class="main-stage" v-drop="handleDropOnContainer" @dragenter="handleDragEnter" @dragleave="handleDragLeave">
+      <div
+        class="drag-wrapper--in-stage"
+        v-for="(item, index) in compoListWillRender"
+        :key="`${item.name},${item.index}`"
+        :data-index="index"
+        v-dragstart="{ fn: handleDragStart, dataX: index }"
+        @click="activeCompo(item)"
+      >
+        <component :is="item.compo" :compoStates="item.compoStates" :compoStyle="item.compoStyle"></component>
+        <span class="debug-el">{{ index }}</span>
+      </div>
+    </div>
+    <div class="prop-editor-wrapper">
+      <propEditor :activedComponent="activedComponent" />
     </div>
   </div>
 </template>
 <script setup>
-import { inject } from 'vue';
+import { inject, ref, reactive } from 'vue';
 import cComList from './c-components/index.js'; //  所有c-组件
+import propEditor from './propEditor.vue';
 
 const compoListWillRender = inject('compoListWillRender');
+
+let activedComponent = ref({
+  compoStates: {},
+  compoStyle: {}
+});
 
 function handleDragStart(e, index) {
   // debugger;
@@ -52,7 +64,15 @@ function commonPutCompoFn(e, srcCompo, _data) {
     // 当前容器没有放置组件
 
     e.path[0].classList.remove('__drag-active'); // 移除active类
-    return compoListWillRender.value.push(srcCompo);
+    return compoListWillRender.value.push({
+      ...srcCompo,
+      compoStates: reactive({
+        ...srcCompo.compoStates
+      }),
+      compoStyle: reactive({
+        ...srcCompo.compoStyle
+      })
+    });
   }
 
   const targetEl = e.path.find(el => {
@@ -73,7 +93,15 @@ function commonPutCompoFn(e, srcCompo, _data) {
     // 鼠标偏下，应该在下一个索引的位置添加组件
     index = index + 1;
   }
-  compoListWillRender.value.splice(index, 0, srcCompo);
+  compoListWillRender.value.splice(index, 0, {
+    ...srcCompo,
+    compoStates: reactive({
+      ...srcCompo.compoStates
+    }),
+    compoStyle: reactive({
+      ...srcCompo.compoStyle
+    })
+  });
 }
 
 function addCompoToStage(e, _data) {
@@ -107,10 +135,19 @@ function handleDragEnter(e) {
 function handleDragLeave(e) {
   commonToggleDragActiveClass(e);
 }
+
+function activeCompo(item) {
+  activedComponent.value = item;
+}
 </script>
 <style lang="scss">
-.main-stage {
+.main-stage-wrapper {
   height: 100%;
+  display: flex;
+}
+.main-stage {
+  // height: 100%;
+  flex: 1;
   .drag-wrapper--in-stage {
     border: 1px dashed gray;
     position: relative;
@@ -120,6 +157,11 @@ function handleDragLeave(e) {
       right: 0;
     }
   }
+}
+
+.prop-editor-wrapper {
+  width: 240px;
+  background-color: #fff;
 }
 
 .__drag-active {
