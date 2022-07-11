@@ -1,5 +1,5 @@
 <template lang="">
-  <div class="main-stage" v-drop="handleDropOnContainer">
+  <div class="main-stage" v-drop="handleDropOnContainer" @dragenter="handleDragEnter" @dragleave="handleDragLeave">
     <div
       class="drag-wrapper--in-stage"
       v-for="(item, index) in compoListWillRender"
@@ -8,6 +8,7 @@
       v-dragstart="{ fn: handleDragStart, dataX: index }"
     >
       <component :is="item.compo"></component>
+      <span class="debug-el">{{ index }}</span>
     </div>
   </div>
 </template>
@@ -47,8 +48,10 @@ function handleDropOnContainer(e) {
 
 function commonPutCompoFn(e, srcCompo) {
   // debugger;
-  if (e.path[0].className === 'main-stage') {
+  if (e.path[0].className.includes('main-stage')) {
     // 当前容器没有放置组件
+
+    e.path[0].classList.remove('__drag-active'); // 移除active类
     return compoListWillRender.value.push(srcCompo);
   }
 
@@ -57,9 +60,11 @@ function commonPutCompoFn(e, srcCompo) {
     return el.className && el.className.includes('drag-wrapper--in-stage');
   }); // 目标元素
 
-  // console.log(e);
+  targetEl.classList.remove('__drag-active'); // 移除active类
+
   // console.log(e.offsetY, targetEl.offsetHeight); // e.offsetY 是鼠标距离drop触发元素顶部的值；
   let { index } = targetEl.dataset;
+  console.log(index, '放置的index');
   if (e.offsetY * 2 > targetEl.offsetHeight) {
     // 鼠标偏下，应该在下一个索引的位置添加组件
     index = Number(index) + 1;
@@ -74,8 +79,31 @@ function addCompoToStage(e, _data) {
 }
 
 function moveCompo(e, _data) {
+  console.log(_data.index, '拖动的index');
   const srcCompo = compoListWillRender.value.splice(_data.index, 1)[0];
   commonPutCompoFn(e, srcCompo);
+}
+
+function commonToggleDragActiveClass(e) {
+  let targetEl;
+  if (e.path[0].className.includes('main-stage')) {
+    targetEl = e.path[0];
+  } else {
+    // debugger;
+    targetEl = e.path.find(el => {
+      return el.className && el.className.includes('drag-wrapper--in-stage');
+    });
+  }
+
+  targetEl.classList.toggle('__drag-active');
+}
+
+function handleDragEnter(e) {
+  commonToggleDragActiveClass(e);
+}
+
+function handleDragLeave(e) {
+  commonToggleDragActiveClass(e);
 }
 </script>
 <style lang="scss">
@@ -83,6 +111,16 @@ function moveCompo(e, _data) {
   height: 100%;
   .drag-wrapper--in-stage {
     border: 1px dashed gray;
+    position: relative;
+    .debug-el {
+      position: absolute;
+      top: 0;
+      right: 0;
+    }
   }
+}
+
+.__drag-active {
+  box-shadow: inset 2px 2px rgb(215, 37, 37), inset -2px -2px rgb(215, 37, 37);
 }
 </style>
