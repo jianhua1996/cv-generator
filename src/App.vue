@@ -25,7 +25,7 @@
 </template>
 
 <script setup>
-import { reactive, provide, shallowRef, ref } from 'vue';
+import { reactive, provide } from 'vue';
 import { NWatermark } from 'naive-ui'; // 水印
 import compoBox from './components/compoBox.vue'; // 左侧组件盒子
 import mainStage from './components/mainStage.vue'; // 右侧主舞台
@@ -35,7 +35,7 @@ const waterMark = reactive({
   content: '前端工程师-陈建华'
 });
 
-provide('compoListWillRender', ref([]));
+provide('compoListWillRender', reactive([]));
 </script>
 
 <style lang="scss" scoped>

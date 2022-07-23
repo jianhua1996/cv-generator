@@ -2,15 +2,14 @@
   <div class="main-stage-wrapper">
     <div class="main-stage" v-drop="handleDropOnContainer" @dragenter="handleDragEnter" @dragleave="handleDragLeave">
       <div
-        class="drag-wrapper--in-stage"
+        :class="['drag-wrapper--in-stage', item.id === activedComponent.id ? '__drag-select' : '']"
         v-for="(item, index) in compoListWillRender"
-        :key="`${item.name},${item.index}`"
+        :key="item.id"
         :data-index="index"
-        v-dragstart="{ fn: handleDragStart, dataX: index }"
-        @click="activeCompo(item)"
+        @click="activeCompo(item, $event)"
       >
         <component :is="item.compo" :compoStates="item.compoStates" :compoStyle="item.compoStyle"></component>
-        <span class="debug-el">{{ index }}</span>
+        <span class="debug-el">{{ item.id }}</span>
       </div>
     </div>
     <div class="prop-editor-wrapper">
@@ -22,6 +21,7 @@
 import { inject, ref, reactive } from 'vue';
 import cComList from './c-components/index.js'; //  所有c-组件
 import propEditor from './propEditor.vue';
+import { getRandomString } from '@/utils';
 
 const compoListWillRender = inject('compoListWillRender');
 
@@ -30,41 +30,36 @@ let activedComponent = ref({
   compoStyle: {}
 });
 
-function handleDragStart(e, index) {
-  // debugger;
-  const o = {
-    type: 'move',
-    data: {
-      index
-    }
-  };
-  e.dataTransfer.setData('application/json', JSON.stringify(o));
-}
-
+/**
+ * drop事件处理器
+ * @param {*} e
+ */
 function handleDropOnContainer(e) {
   // drop事件触发
   const transferJSON = e.dataTransfer.getData('application/json');
+  // debugger;
   try {
     const transferData = JSON.parse(transferJSON);
-    if (transferData.type === 'add') {
-      // 从左侧拖拽，也就是添加元素
-      addCompoToStage(e, transferData.data);
-    } else {
-      // 从右侧拖拽，移动元素
-      moveCompo(e, transferData.data);
-    }
+    commonPutCompoFn(e, transferData);
   } catch (err) {
     console.error(err, 'JSON: 转换失败');
   }
 }
 
-function commonPutCompoFn(e, srcCompo, _data) {
-  // debugger;
-  if (e.path[0].className.includes('main-stage')) {
-    // 当前容器没有放置组件
+/**
+ * 通用放置函数
+ * @param {*} e
+ * @param {*} transferData
+ */
+function commonPutCompoFn(e, transferData) {
+  const { target } = transferData; // 解构参数
+  let srcCompo = cComList.find(item => item.name === target.name); // 找到源组件
 
-    e.path[0].classList.remove('__drag-active'); // 移除active类
-    return compoListWillRender.value.push({
+  if (e.path[0].className.includes('main-stage')) {
+    // 被激活的是主舞台
+    e.path[0].classList.remove('__drag-active'); // 先移除active效果
+    // 浅拷贝一下组件数据，保证每个渲染组件的compoStates和compoStyle都是独立且是响应式的
+    const tmpObj = {
       ...srcCompo,
       compoStates: reactive({
         ...srcCompo.compoStates
@@ -72,48 +67,44 @@ function commonPutCompoFn(e, srcCompo, _data) {
       compoStyle: reactive({
         ...srcCompo.compoStyle
       })
-    });
-  }
+    };
+    tmpObj.id = getRandomString({ type: 'mixed' }); // 给组件初始化一个id
+    compoListWillRender.push(tmpObj); // 如果被激活的是主舞台直接把组件放到舞台最后面
+  } else {
+    // 被激活的不是主舞台
+    const targetEl = e.path.find(el => {
+      return el.className && el.className.includes('drag-wrapper--in-stage');
+    }); // 找一下被激活的目标元素，注意这里找的是容器drag-wrapper--in-stage并不是渲染的组件本身
 
-  const targetEl = e.path.find(el => {
+    targetEl.classList.remove('__drag-active'); // 移除active效果
+    // 同样浅拷贝一下组件数据，保证每个渲染组件的compoStates和compoStyle都是独立且响应式
+    const tmpObj = {
+      ...srcCompo,
+      compoStates: reactive({
+        ...srcCompo.compoStates
+      }),
+      compoStyle: reactive({
+        ...srcCompo.compoStyle
+      })
+    };
+
+    tmpObj.id = getRandomString({ type: 'mixed' }); // 添加id
+    let targetElIndex = +targetEl.dataset.index; // 目标元素绑定的index
     // debugger;
-    return el.className && el.className.includes('drag-wrapper--in-stage');
-  }); // 目标元素
 
-  targetEl.classList.remove('__drag-active'); // 移除active类
+    // 判断鼠标在容器内的垂直位置是否超过了容器高度的一半
+    if (e.layerY * 2 > targetEl.offsetHeight) {
+      targetElIndex += 1;
+    }
 
-  // console.log(e.layerY, targetEl.offsetHeight); // e.layerY 是鼠标距离drop触发元素顶部的值；
-  let index = Number(targetEl.dataset.index);
-
-  if (typeof _data.index === 'number' && _data.index < index) {
-    index = index - 1; // 由于上一步 删除元素后并没有立即更新视图，所以实际上触发元素的index是没有前移的，这里手动前移一位
+    compoListWillRender.splice(targetElIndex, 0, tmpObj);
   }
-  // debugger;
-  if (e.layerY * 2 > targetEl.offsetHeight) {
-    // 鼠标偏下，应该在下一个索引的位置添加组件
-    index = index + 1;
-  }
-  compoListWillRender.value.splice(index, 0, {
-    ...srcCompo,
-    compoStates: reactive({
-      ...srcCompo.compoStates
-    }),
-    compoStyle: reactive({
-      ...srcCompo.compoStyle
-    })
-  });
 }
 
-function addCompoToStage(e, _data) {
-  const srcCompo = cComList.find(item => item.name === _data.name); // 找到源组件
-  commonPutCompoFn(e, srcCompo, _data);
-}
-
-function moveCompo(e, _data) {
-  const srcCompo = compoListWillRender.value.splice(_data.index, 1)[0];
-  commonPutCompoFn(e, srcCompo, _data);
-}
-
+/**
+ * 拖动过程中添加样式
+ * @param {*} e
+ */
 function commonToggleDragActiveClass(e) {
   let targetEl;
   if (e.path[0].className.includes('main-stage')) {
@@ -136,7 +127,12 @@ function handleDragLeave(e) {
   commonToggleDragActiveClass(e);
 }
 
-function activeCompo(item) {
+/**
+ * 选中组件时的处理事件
+ * @param {*} item
+ */
+function activeCompo(item, e) {
+  // debugger;
   activedComponent.value = item;
 }
 </script>
@@ -149,7 +145,9 @@ function activeCompo(item) {
   // height: 100%;
   flex: 1;
   .drag-wrapper--in-stage {
-    border: 1px dashed gray;
+    border: 1px dotted rgb(155, 143, 143);
+    box-sizing: border-box;
+    padding: 2px;
     position: relative;
     .debug-el {
       position: absolute;
@@ -166,5 +164,8 @@ function activeCompo(item) {
 
 .__drag-active {
   box-shadow: inset 2px 2px rgb(215, 37, 37), inset -2px -2px rgb(215, 37, 37);
+}
+.__drag-select {
+  box-shadow: inset 2px 2px rgb(77, 77, 231), inset -2px -2px rgb(77, 77, 231);
 }
 </style>
