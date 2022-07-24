@@ -9,7 +9,18 @@
         @click="activeCompo(item, $event)"
       >
         <component :is="item.compo" :compoStates="item.compoStates" :compoStyle="item.compoStyle"></component>
-        <span class="debug-el">{{ item.id }}</span>
+        <span class="--actions">
+          <n-tooltip :show-arrow="false" trigger="hover">
+            <template #trigger>
+              <span class="info">组件id</span>
+            </template>
+            {{ item.id }}
+          </n-tooltip>
+
+          <n-icon class="delete" @click="removeCompo(index)">
+            <DeleteFilled />
+          </n-icon>
+        </span>
       </div>
     </div>
     <div class="prop-editor-wrapper">
@@ -22,6 +33,8 @@ import { inject, ref, reactive } from 'vue';
 import cComList from './c-components/index.js'; //  所有c-组件
 import propEditor from './propEditor.vue';
 import { getRandomString } from '@/utils';
+import { NIcon, NTooltip } from 'naive-ui';
+import { DeleteFilled } from '@vicons/material';
 
 const compoListWillRender = inject('compoListWillRender');
 
@@ -135,8 +148,16 @@ function activeCompo(item, e) {
   // debugger;
   activedComponent.value = item;
 }
+
+/**
+ * 移除舞台上的组件
+ * @param {*} index
+ */
+function removeCompo(index) {
+  compoListWillRender.splice(index, 1);
+}
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .main-stage-wrapper {
   height: 100%;
   display: flex;
@@ -149,10 +170,31 @@ function activeCompo(item, e) {
     box-sizing: border-box;
     padding: 2px;
     position: relative;
-    .debug-el {
+    .--actions {
       position: absolute;
       top: 0;
       right: 0;
+      display: none;
+      height: 16px;
+      align-items: center;
+      overflow: hidden;
+      .info,
+      .delete {
+        font-size: 12px;
+        display: block;
+        height: 100%;
+        background-color: rgb(77, 77, 231);
+        color: #fff;
+        border-radius: 2px;
+      }
+      .info {
+        padding: 0 2px;
+        margin-right: 5px;
+      }
+      .delete {
+        font-size: 16px;
+        cursor: pointer;
+      }
     }
   }
 }
@@ -162,10 +204,13 @@ function activeCompo(item, e) {
   background-color: #fff;
 }
 
-.__drag-active {
-  box-shadow: inset 2px 2px rgb(215, 37, 37), inset -2px -2px rgb(215, 37, 37);
-}
 .__drag-select {
   box-shadow: inset 2px 2px rgb(77, 77, 231), inset -2px -2px rgb(77, 77, 231);
+  .--actions {
+    display: flex !important;
+  }
+}
+.__drag-active {
+  box-shadow: inset 2px 2px rgb(215, 37, 37), inset -2px -2px rgb(215, 37, 37);
 }
 </style>
