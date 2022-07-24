@@ -8,7 +8,7 @@
         :data-index="index"
         @click="activeCompo(item, $event)"
       >
-        <component :is="item.compo" :compoStates="item.compoStates" :compoStyle="item.compoStyle"></component>
+        <component :is="item.compo" :compoStates="item.compoStates"></component>
         <span class="--actions">
           <n-tooltip :show-arrow="false" trigger="hover">
             <template #trigger>
@@ -38,10 +38,7 @@ import { DeleteFilled } from '@vicons/material';
 
 const compoListWillRender = inject('compoListWillRender');
 
-let activedComponent = ref({
-  compoStates: {},
-  compoStyle: {}
-});
+let activedComponent = ref({});
 
 /**
  * drop事件处理器
@@ -71,14 +68,11 @@ function commonPutCompoFn(e, transferData) {
   if (e.path[0].className.includes('main-stage')) {
     // 被激活的是主舞台
     e.path[0].classList.remove('__drag-active'); // 先移除active效果
-    // 浅拷贝一下组件数据，保证每个渲染组件的compoStates和compoStyle都是独立且是响应式的
+    // 浅拷贝一下组件数据，保证每个渲染组件的compoStates都是独立且是响应式的
     const tmpObj = {
       ...srcCompo,
       compoStates: reactive({
         ...srcCompo.compoStates
-      }),
-      compoStyle: reactive({
-        ...srcCompo.compoStyle
       })
     };
     tmpObj.id = getRandomString({ type: 'mixed' }); // 给组件初始化一个id
@@ -90,14 +84,11 @@ function commonPutCompoFn(e, transferData) {
     }); // 找一下被激活的目标元素，注意这里找的是容器drag-wrapper--in-stage并不是渲染的组件本身
 
     targetEl.classList.remove('__drag-active'); // 移除active效果
-    // 同样浅拷贝一下组件数据，保证每个渲染组件的compoStates和compoStyle都是独立且响应式
+    // 同样浅拷贝一下组件数据，保证每个渲染组件的compoStates都是独立且响应式
     const tmpObj = {
       ...srcCompo,
       compoStates: reactive({
         ...srcCompo.compoStates
-      }),
-      compoStyle: reactive({
-        ...srcCompo.compoStyle
       })
     };
 

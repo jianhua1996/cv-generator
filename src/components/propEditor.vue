@@ -8,7 +8,7 @@
         </div>
         <div class="state-row">
           <div class="left">标题：</div>
-          <input v-model="activedComponent.compoStates.value" />
+          <input v-model="compoStates.value" />
         </div>
       </n-tab-pane>
       <n-tab-pane name="com-styles" tab="组件样式"> </n-tab-pane>
@@ -16,12 +16,14 @@
   </div>
 </template>
 <script setup>
-import { defineProps } from 'vue';
+import { defineProps, computed } from 'vue';
 import { NTabs, NTabPane } from 'naive-ui';
 
 const props = defineProps({
   activedComponent: {}
 });
+
+const compoStates = computed(() => props.activedComponent.compoStates || {});
 </script>
 <style lang="scss">
 .state-row {

@@ -7,5 +7,11 @@ export default {
   compoStates: {
     value: '这是header1组件'
   },
-  compoStyle: {}
+  defineStates: markRaw([
+    {
+      label: '标题名',
+      colName: 'value',
+      type: 'input'
+    }
+  ])
 };

@@ -5,8 +5,7 @@
 import { defineProps } from 'vue';
 
 const props = defineProps({
-  compoStates: {},
-  compoStyle: {}
+  compoStates: {}
 });
 </script>
 <style lang="scss">
