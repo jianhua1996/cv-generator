@@ -1,4 +1,4 @@
-<template lang="">
+<template>
   <div class="c-table">
     <n-table :single-line="false">
       <thead>

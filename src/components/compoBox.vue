@@ -1,4 +1,4 @@
-<template lang="">
+<template>
   <div class="compo-box">
     <div
       class="compo-alias"

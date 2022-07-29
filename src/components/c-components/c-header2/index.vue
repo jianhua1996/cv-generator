@@ -1,4 +1,4 @@
-<template lang="">
+<template>
   <div class="header-2">这是header2组件</div>
 </template>
 <script setup></script>

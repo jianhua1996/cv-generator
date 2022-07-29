@@ -1,4 +1,4 @@
-<template lang="">
+<template>
   <div class="main-stage-wrapper">
     <div class="main-stage" v-drop="handleDropOnContainer" @dragenter="handleDragEnter" @dragleave="handleDragLeave">
       <div
