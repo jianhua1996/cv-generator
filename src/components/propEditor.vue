@@ -12,11 +12,29 @@
             <template v-if="item.type === 'input'">
               <n-input v-model:value="compoStates[`${item.colName}`]" />
             </template>
+            <template v-if="item.type === 'switch'">
+              <n-switch v-model:value="compoStates[`${item.colName}`]" />
+            </template>
             <template v-if="item.type === 'select'">
               <n-select v-model:value="compoStates[`${item.colName}`]" :options="item.prop.options" />
             </template>
+            <template v-if="item.type === 'range'">
+              <n-slider
+                v-model:value="compoStates[`${item.colName}`]"
+                :step="item.prop.step"
+                :min="item.prop.min"
+                :max="item.prop.max"
+              />
+              <n-input-number
+                v-model:value="compoStates[`${item.colName}`]"
+                :step="item.prop.step"
+                :min="item.prop.min"
+                :max="item.prop.max"
+                size="small"
+              />
+            </template>
             <template v-if="item.type === 'colorPicker'">
-              <n-color-picker :modes="['hex']" v-model:value="compoStates[`${item.colName}`]" />
+              <n-color-picker v-model:value="compoStates[`${item.colName}`]" :modes="['hex']" />
             </template>
           </div>
         </div>
@@ -26,7 +44,7 @@
 </template>
 <script setup>
 import { computed } from 'vue';
-import { NTabs, NTabPane, NInput, NColorPicker, NSelect, NCard } from 'naive-ui';
+import { NTabs, NTabPane, NInput, NColorPicker, NSelect, NCard, NSwitch, NSlider, NInputNumber } from 'naive-ui';
 
 const props = defineProps({
   activedComponent: {}

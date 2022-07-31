@@ -6,14 +6,31 @@ export default {
   compo: markRaw(Compo),
   compoStates: {
     value: '我是Header组件',
-    color: '#ce5252ff',
+    fontSize: 28,
+    isBold: true,
+    color: '#BE4005FF',
     align: 'left'
   },
   defineStates: markRaw([
     {
-      label: '标题名',
+      label: '标题内容',
       colName: 'value',
       type: 'input'
+    },
+    {
+      label: '字体大小',
+      colName: 'fontSize',
+      type: 'range',
+      prop: {
+        step: 2,
+        min: 16,
+        max: 36
+      }
+    },
+    {
+      label: '是否加粗',
+      colName: 'isBold',
+      type: 'switch'
     },
     {
       label: '字体颜色',
@@ -21,7 +38,7 @@ export default {
       type: 'colorPicker'
     },
     {
-      label: '水平排列',
+      label: '水平对齐',
       colName: 'align',
       type: 'select',
       prop: {

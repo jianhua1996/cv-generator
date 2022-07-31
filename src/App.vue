@@ -41,7 +41,7 @@ provide('compoListWillRender', reactive([]));
 <style lang="scss" scoped>
 .main-wrapper {
   display: flex;
-  min-height: 800px;
+  height: 100vh;
   padding: 0 12px;
   box-sizing: border-box;
   .left {

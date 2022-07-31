@@ -154,7 +154,8 @@ function removeCompo(index) {
   display: flex;
 }
 .main-stage {
-  // height: 100%;
+  height: 100%;
+  overflow: auto;
   flex: 1;
   .drag-wrapper--in-stage {
     border: 1px dotted rgb(155, 143, 143);
@@ -193,6 +194,8 @@ function removeCompo(index) {
 .prop-editor-wrapper {
   width: 240px;
   background-color: #fff;
+  height: 100%;
+  overflow: auto;
 }
 
 .__drag-select {

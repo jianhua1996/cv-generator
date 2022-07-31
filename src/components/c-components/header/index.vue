@@ -11,13 +11,15 @@ const props = defineProps({
 const headerStyle = computed(() => {
   return {
     color: props.compoStates.color,
-    textAlign: props.compoStates.align
+    textAlign: props.compoStates.align,
+    fontWeight: props.compoStates.isBold ? 'bold' : 'normal',
+    fontSize: `${props.compoStates.fontSize}px`
   };
 });
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .c-header {
-  font-size: 28px;
-  margin: 20px 0;
+  //
+  margin: 0.55em 0;
 }
 </style>
