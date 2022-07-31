@@ -1,6 +1,7 @@
 <template>
+  <h4 style="text-align: center">组件列表</h4>
   <div class="compo-box">
-    <div
+    <n-tag
       class="compo-alias"
       v-for="(item, index) in cComList"
       :key="item.name"
@@ -13,11 +14,12 @@
         fn: handleDragStart
       }"
     >
-      {{ item.name }}
-    </div>
+      {{ `${item.name}组件` }}
+    </n-tag>
   </div>
 </template>
 <script setup>
+import { NTag } from 'naive-ui';
 import cComList from './c-components/index.js'; //  所有c-组件
 
 function handleDragStart(e, dataX) {
@@ -27,5 +29,13 @@ function handleDragStart(e, dataX) {
 </script>
 <style lang="scss">
 .compo-box {
+  display: flex;
+  flex-wrap: wrap;
+  line-height: 32px;
+  justify-content: space-between;
+  .compo-alias {
+    width: 46%;
+    justify-content: center;
+  }
 }
 </style>

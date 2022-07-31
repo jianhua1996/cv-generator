@@ -2,18 +2,22 @@
   <div class="prop-editor">
     <n-tabs type="segment" animated>
       <n-tab-pane name="com-states" tab="组件状态">
-        <div class="state-row">
-          <div class="top">组件名称：</div>
-          <div class="bottom" style="padding: 0 0.5em">{{ activedComponent.name }}</div>
-        </div>
-        <div class="state-row">
-          <div class="top">组件ID：</div>
-          <div class="bottom" style="padding: 0 0.5em">{{ activedComponent.id }}</div>
-        </div>
+        <n-card size="small" embedded :title="'当前组件'" v-show="activedComponent.id">
+          <div>组件名：{{ activedComponent.name }}</div>
+          <div>组件ID：{{ activedComponent.id }}</div>
+        </n-card>
         <div class="state-row" v-for="item in defineStates">
           <div class="top">{{ item.label }} ：</div>
           <div class="bottom">
-            <n-input v-model:value="compoStates[`${item.colName}`]" />
+            <template v-if="item.type === 'input'">
+              <n-input v-model:value="compoStates[`${item.colName}`]" />
+            </template>
+            <template v-if="item.type === 'select'">
+              <n-select v-model:value="compoStates[`${item.colName}`]" :options="item.prop.options" />
+            </template>
+            <template v-if="item.type === 'colorPicker'">
+              <n-color-picker :modes="['hex']" v-model:value="compoStates[`${item.colName}`]" />
+            </template>
           </div>
         </div>
       </n-tab-pane>
@@ -22,7 +26,7 @@
 </template>
 <script setup>
 import { computed } from 'vue';
-import { NTabs, NTabPane, NInput } from 'naive-ui';
+import { NTabs, NTabPane, NInput, NColorPicker, NSelect, NCard } from 'naive-ui';
 
 const props = defineProps({
   activedComponent: {}
@@ -31,7 +35,7 @@ const props = defineProps({
 const compoStates = computed(() => props.activedComponent.compoStates || {}); // 组件内部接收到的状态
 const defineStates = computed(() => props.activedComponent.defineStates || []); // compoStates中暴露给编辑器交互的状态
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
 .state-row {
   display: flex;
   flex-direction: column;
@@ -45,6 +49,12 @@ const defineStates = computed(() => props.activedComponent.defineStates || []); 
     font-weight: bold;
   }
   .bottom {
+  }
+}
+.prop-editor {
+  :deep(.n-card-header__main) {
+    font-weight: bold;
+    color: rgb(51, 54, 57);
   }
 }
 </style>
