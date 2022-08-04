@@ -7,8 +7,12 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
+    "@codemirror/lang-javascript": "^6.0.2",
+    "codemirror": "^6.0.1",
     "core-js": "^3.8.3",
-    "vue": "^3.2.13"
+    "next-vue-storage-watcher": "^0.0.7",
+    "vue": "^3.2.13",
+    "vue-codemirror": "^6.0.2"
   },
   "devDependencies": {
     "@vicons/material": "^0.12.0",

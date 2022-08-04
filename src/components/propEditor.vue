@@ -39,12 +39,43 @@
           </div>
         </div>
       </n-tab-pane>
+      <n-tab-pane name="com-actions" tab="组件行为">
+        <n-list bordered>
+          <n-list-item v-for="item in defineActions">
+            {{ item.label }}
+            <template #suffix>
+              <EditNoteRound @click="showCodeMirror(item.key)" />
+            </template>
+          </n-list-item>
+        </n-list>
+      </n-tab-pane>
     </n-tabs>
+    <n-modal v-model:show="showModal" :preset="'card'" class="card-modal--prop_editor">
+      <Codemirror v-model:modelValue="codeString" />
+      <template #footer>
+        <n-button type="primary" @click="createFunction"> 确定 </n-button>
+      </template>
+    </n-modal>
   </div>
 </template>
 <script setup>
-import { computed } from 'vue';
-import { NTabs, NTabPane, NInput, NColorPicker, NSelect, NCard, NSwitch, NSlider, NInputNumber } from 'naive-ui';
+import { EditNoteRound } from '@vicons/material';
+import { computed, reactive, ref } from 'vue';
+import {
+  NTabs,
+  NTabPane,
+  NInput,
+  NColorPicker,
+  NSelect,
+  NCard,
+  NSwitch,
+  NSlider,
+  NInputNumber,
+  NList,
+  NListItem,
+  NModal,
+  NButton
+} from 'naive-ui';
 
 const props = defineProps({
   activedComponent: {}
@@ -52,6 +83,32 @@ const props = defineProps({
 
 const compoStates = computed(() => props.activedComponent.compoStates || {}); // 组件内部接收到的状态
 const defineStates = computed(() => props.activedComponent.defineStates || []); // compoStates中暴露给编辑器交互的状态
+const compoActions = computed(() => props.activedComponent.compoActions || {}); // 实际添加的事件对象
+const defineActions = computed(() => props.activedComponent.defineActions || []); // 定义的可添加的事件列表
+
+const showModal = ref(false);
+const currentActionKey = ref('');
+const codeString = ref('');
+
+function showCodeMirror(key) {
+  currentActionKey.value = key; // 保存点击的事件key
+  const oldMethod = compoActions.value[currentActionKey.value]; // 看之前是否有添加该事件的处理程序
+  if (oldMethod) {
+    codeString.value = oldMethod.methodString;
+  } else {
+    codeString.value = '';
+  }
+  showModal.value = true;
+}
+
+function createFunction() {
+  // debugger;
+  compoActions.value[currentActionKey.value] = {
+    method: new Function(codeString.value),
+    methodString: codeString.value
+  };
+  showModal.value = false;
+}
 </script>
 <style lang="scss" scoped>
 .state-row {
@@ -66,13 +123,27 @@ const defineStates = computed(() => props.activedComponent.defineStates || []); 
     padding: 0 0.5em;
     font-weight: bold;
   }
-  .bottom {
-  }
 }
 .prop-editor {
   :deep(.n-card-header__main) {
     font-weight: bold;
     color: rgb(51, 54, 57);
+  }
+  :deep(.n-list-item__suffix) {
+    flex: unset;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+  }
+}
+</style>
+<style lang="scss">
+.card-modal--prop_editor {
+  width: 750px;
+  height: 550px;
+  overflow: auto;
+  .n-card__footer {
+    text-align: right;
   }
 }
 </style>

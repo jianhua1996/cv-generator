@@ -58,5 +58,20 @@ export default {
         ]
       }
     }
+  ]),
+  compoActions: {},
+  defineActions: markRaw([
+    {
+      label: '元素挂载前',
+      key: 'onBeforeMount'
+    },
+    {
+      label: '元素挂载后',
+      key: 'onMounted'
+    },
+    {
+      label: '元素取消挂载后',
+      key: 'onUnmounted'
+    }
   ])
 };

@@ -73,10 +73,11 @@ function commonPutCompoFn(e, transferData) {
       ...srcCompo,
       compoStates: reactive({
         ...srcCompo.compoStates
-      })
+      }),
+      compoActions: reactive({ ...srcCompo.compoActions })
     };
     tmpObj.id = getRandomString({ type: 'mixed' }); // 给组件初始化一个id
-    compoListWillRender.push(tmpObj); // 如果被激活的是主舞台直接把组件放到舞台最后面
+    compoListWillRender.value.push(tmpObj); // 如果被激活的是主舞台直接把组件放到舞台最后面
   } else {
     // 被激活的不是主舞台
     const targetEl = e.path.find(el => {
@@ -89,7 +90,8 @@ function commonPutCompoFn(e, transferData) {
       ...srcCompo,
       compoStates: reactive({
         ...srcCompo.compoStates
-      })
+      }),
+      compoActions: reactive({ ...srcCompo.compoActions })
     };
 
     tmpObj.id = getRandomString({ type: 'mixed' }); // 添加id
@@ -101,7 +103,7 @@ function commonPutCompoFn(e, transferData) {
       targetElIndex += 1;
     }
 
-    compoListWillRender.splice(targetElIndex, 0, tmpObj);
+    compoListWillRender.value.splice(targetElIndex, 0, tmpObj);
   }
 }
 
@@ -145,7 +147,7 @@ function activeCompo(item, e) {
  * @param {*} index
  */
 function removeCompo(index) {
-  compoListWillRender.splice(index, 1);
+  compoListWillRender.value.splice(index, 1);
 }
 </script>
 <style lang="scss" scoped>
