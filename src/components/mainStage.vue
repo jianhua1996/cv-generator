@@ -8,7 +8,13 @@
         :data-index="index"
         @click="activeCompo(item, $event)"
       >
-        <component :is="item.compo" :compoStates="item.compoStates" :compoActions="item.compoActions"></component>
+        <component
+          :is="item.compo"
+          :compoStates="item.compoStates"
+          :compoActions="item.compoActions"
+          :__slot="item.__slot"
+          :data-index="index"
+        ></component>
         <span class="--actions">
           <n-tooltip :show-arrow="false" trigger="hover">
             <template #trigger>
@@ -29,10 +35,9 @@
   </div>
 </template>
 <script setup>
-import { inject, ref, reactive } from 'vue';
+import { inject, ref } from 'vue';
 import cComList from './c-components/index.js'; //  所有c-组件
 import propEditor from './propEditor.vue';
-import { getRandomString } from '@/utils';
 import { NIcon, NTooltip } from 'naive-ui';
 import { DeleteFilled } from '@vicons/material';
 import useDragActions from '@/effects/useDragActions';

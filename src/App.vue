@@ -137,6 +137,8 @@ onMounted(() => {
     display: flex;
     .left {
       width: 260px;
+      padding-right: 12px;
+      box-sizing: border-box;
     }
     .right {
       flex: 1;

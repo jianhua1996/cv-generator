@@ -1,4 +1,4 @@
-import { reactive } from 'vue';
+import { reactive, markRaw } from 'vue';
 import { getRandomString } from '@/utils';
 
 export default function (options = {}) {
@@ -41,10 +41,11 @@ export default function (options = {}) {
   function putDragElement(e, srcCompo, compoList) {
     const { targetEl, deep } = findTargetElement(e.path);
     // deep用来区分触发元素的类型，主要有上面classMap提到的三种
+    let targetElIndex = +targetEl.dataset.index; // 目标元素绑定的dataset: index，只有前两种类型有这个数据
 
     deactivatedDragClass(targetEl); // 先移除active效果
 
-    // 浅拷贝一下组件数据，保证每个渲染组件的compoStates都是独立且是响应式的
+    // 浅拷贝一下源组件的组件数据，保证每个渲染组件的compoStates、compoActions都是独立且是响应式的
     const tmpObj = {
       ...srcCompo,
       compoStates: reactive({
@@ -52,23 +53,45 @@ export default function (options = {}) {
       }),
       compoActions: reactive({ ...srcCompo.compoActions })
     };
+
     tmpObj.id = getRandomString({ type: 'mixed' }); // 给组件初始化一个id
 
-    if (deep === 0) {
-      // 组件内部的wrapper类
+    switch (deep) {
+      // 区分目标类型进行放置
+      case 0:
+        // 判断目标组件是否可使用slot插槽，否则按照下一case类型进行处理
+        if (compoList[targetElIndex].useSlot) {
+          putInCompo();
+          break;
+        }
+      case 1:
+        putOnStageWrapper();
+        break;
+      case 2:
+        putOnMainStage();
+        break;
     }
-    if (deep === 1) {
-      // 舞台上单个组件的wrapper类
-      let targetElIndex = +targetEl.dataset.index; // 目标元素绑定的index
 
-      if (e.layerY * 2 > targetEl.offsetHeight) {
+    function putInCompo() {
+      // 放置到组件内部
+      const targetCompo = compoList[targetElIndex];
+      const targetObj = {
+        ...targetCompo,
+        __slot: tmpObj
+      };
+      // debugger;
+      compoList.splice(targetElIndex, 1, targetObj);
+    }
+    function putOnStageWrapper() {
+      // 放置到舞台每个容器的wrapper上
+      // debugger;
+      if (e.offsetY * 2 > targetEl.offsetHeight) {
         targetElIndex += 1;
       }
-
       compoList.splice(targetElIndex, 0, tmpObj);
     }
-    if (deep === 2) {
-      // 主舞台的类
+    function putOnMainStage() {
+      // 放置到主舞台上
       compoList.push(tmpObj);
     }
   }
