@@ -1,19 +1,5 @@
 # cv-generator
 
-## Project setup
-```
-npm install
-```
+# 低代码练手项目
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+使用 vue3 和 naive-ui 库封装的一个简易版本的前端低代码项目，打包后可部署为静态站点，仅做实践练手使用，不涉及后端数据交互。
