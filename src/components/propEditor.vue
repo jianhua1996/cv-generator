@@ -2,9 +2,9 @@
   <div class="prop-editor">
     <n-tabs type="segment" animated>
       <n-tab-pane name="com-states" tab="组件状态">
-        <n-card size="small" embedded :title="'当前组件'" v-show="activedComponent.id">
-          <div>组件名：{{ activedComponent.name }}</div>
-          <div>组件ID：{{ activedComponent.id }}</div>
+        <n-card size="small" embedded :title="'当前组件'" v-show="selectedCom.id">
+          <div>组件名：{{ selectedCom.name }}</div>
+          <div>组件ID：{{ selectedCom.id }}</div>
         </n-card>
         <div class="state-row" v-for="item in defineStates">
           <div class="top">{{ item.label }} ：</div>
@@ -60,7 +60,7 @@
 </template>
 <script setup>
 import { EditNoteRound } from '@vicons/material';
-import { computed, reactive, ref } from 'vue';
+import { computed, ref } from 'vue';
 import {
   NTabs,
   NTabPane,
@@ -76,15 +76,14 @@ import {
   NModal,
   NButton
 } from 'naive-ui';
+import useSelectedComAction from '@/effects/useSelectedComAction';
 
-const props = defineProps({
-  activedComponent: {}
-});
+const { selectedCom } = useSelectedComAction();
 
-const compoStates = computed(() => props.activedComponent.compoStates || {}); // 组件内部接收到的状态
-const defineStates = computed(() => props.activedComponent.defineStates || []); // compoStates中暴露给编辑器交互的状态
-const compoActions = computed(() => props.activedComponent.compoActions || {}); // 实际添加的事件对象
-const defineActions = computed(() => props.activedComponent.defineActions || []); // 定义的可添加的事件列表
+const compoStates = computed(() => selectedCom.value.compoStates || {}); // 组件内部接收到的状态
+const defineStates = computed(() => selectedCom.value.defineStates || []); // compoStates中暴露给编辑器交互的状态
+const compoActions = computed(() => selectedCom.value.compoActions || {}); // 实际添加的事件对象
+const defineActions = computed(() => selectedCom.value.defineActions || []); // 定义的可添加的事件列表
 
 const showModal = ref(false);
 const currentActionKey = ref('');
@@ -105,7 +104,7 @@ function createFunction() {
   // debugger;
   compoActions.value[currentActionKey.value] = {
     methodString: codeString.value,
-    compoId: props.activedComponent.id
+    compoId: selectedCom.value.id
   };
   showModal.value = false;
 }

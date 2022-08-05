@@ -2,11 +2,10 @@
   <div class="main-stage-wrapper">
     <div class="main-stage" v-drop="handleDropOnContainer" @dragenter="handleDragEnter" @dragleave="handleDragLeave">
       <div
-        :class="['drag-wrapper--in-stage', item.id === activedComponent.id ? '__drag-select' : '']"
+        :class="['drag-wrapper--in-stage', comWithSelectedClass(item.id)]"
         v-for="(item, index) in compoListWillRender"
         :key="item.id"
         :data-index="index"
-        @click="activeCompo(item, $event)"
       >
         <component
           :is="item.compo"
@@ -14,6 +13,7 @@
           :compoActions="item.compoActions"
           :__slot="item.__slot"
           :data-index="index"
+          @click="changeSelectedCom(item)"
         ></component>
         <span class="--actions">
           <n-tooltip :show-arrow="false" trigger="hover">
@@ -30,7 +30,7 @@
       </div>
     </div>
     <div class="prop-editor-wrapper">
-      <propEditor :activedComponent="activedComponent" />
+      <propEditor />
     </div>
   </div>
 </template>
@@ -41,12 +41,12 @@ import propEditor from './propEditor.vue';
 import { NIcon, NTooltip } from 'naive-ui';
 import { DeleteFilled } from '@vicons/material';
 import useDragActions from '@/effects/useDragActions';
+import useSelectedComAction from '@/effects/useSelectedComAction';
 
 const compoListWillRender = inject('compoListWillRender');
 
-let activedComponent = ref({});
-
 const { activatedDragClass, putDragElement } = useDragActions();
+const { selectedCom, changeSelectedCom, comWithSelectedClass } = useSelectedComAction();
 
 /**
  * drop事件处理器
@@ -82,15 +82,6 @@ function handleDragEnter(e) {
 
 function handleDragLeave(e) {
   activatedDragClass(e.path);
-}
-
-/**
- * 选中组件时的处理事件
- * @param {*} item
- */
-function activeCompo(item, e) {
-  // debugger;
-  activedComponent.value = item;
 }
 
 /**
@@ -151,12 +142,6 @@ function removeCompo(index) {
   overflow: auto;
 }
 
-.__drag-select {
-  box-shadow: inset 2px 2px rgb(77, 77, 231), inset -2px -2px rgb(77, 77, 231);
-  .--actions {
-    display: flex !important;
-  }
-}
 .__drag-active {
   box-shadow: inset 2px 2px rgb(215, 37, 37), inset -2px -2px rgb(215, 37, 37);
 }
