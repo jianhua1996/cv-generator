@@ -8,7 +8,7 @@
         :data-index="index"
         @click="activeCompo(item, $event)"
       >
-        <component :is="item.compo" :compoStates="item.compoStates"></component>
+        <component :is="item.compo" :compoStates="item.compoStates" :compoActions="item.compoActions"></component>
         <span class="--actions">
           <n-tooltip :show-arrow="false" trigger="hover">
             <template #trigger>
@@ -35,10 +35,13 @@ import propEditor from './propEditor.vue';
 import { getRandomString } from '@/utils';
 import { NIcon, NTooltip } from 'naive-ui';
 import { DeleteFilled } from '@vicons/material';
+import useDragActions from '@/effects/useDragActions';
 
 const compoListWillRender = inject('compoListWillRender');
 
 let activedComponent = ref({});
+
+const { activatedDragClass, putDragElement } = useDragActions();
 
 /**
  * drop事件处理器
@@ -65,72 +68,15 @@ function commonPutCompoFn(e, transferData) {
   const { target } = transferData; // 解构参数
   let srcCompo = cComList.find(item => item.name === target.name); // 找到源组件
 
-  if (e.path[0].className.includes('main-stage')) {
-    // 被激活的是主舞台
-    e.path[0].classList.remove('__drag-active'); // 先移除active效果
-    // 浅拷贝一下组件数据，保证每个渲染组件的compoStates都是独立且是响应式的
-    const tmpObj = {
-      ...srcCompo,
-      compoStates: reactive({
-        ...srcCompo.compoStates
-      }),
-      compoActions: reactive({ ...srcCompo.compoActions })
-    };
-    tmpObj.id = getRandomString({ type: 'mixed' }); // 给组件初始化一个id
-    compoListWillRender.value.push(tmpObj); // 如果被激活的是主舞台直接把组件放到舞台最后面
-  } else {
-    // 被激活的不是主舞台
-    const targetEl = e.path.find(el => {
-      return el.className && el.className.includes('drag-wrapper--in-stage');
-    }); // 找一下被激活的目标元素，注意这里找的是容器drag-wrapper--in-stage并不是渲染的组件本身
-
-    targetEl.classList.remove('__drag-active'); // 移除active效果
-    // 同样浅拷贝一下组件数据，保证每个渲染组件的compoStates都是独立且响应式
-    const tmpObj = {
-      ...srcCompo,
-      compoStates: reactive({
-        ...srcCompo.compoStates
-      }),
-      compoActions: reactive({ ...srcCompo.compoActions })
-    };
-
-    tmpObj.id = getRandomString({ type: 'mixed' }); // 添加id
-    let targetElIndex = +targetEl.dataset.index; // 目标元素绑定的index
-    // debugger;
-
-    // 判断鼠标在容器内的垂直位置是否超过了容器高度的一半
-    if (e.layerY * 2 > targetEl.offsetHeight) {
-      targetElIndex += 1;
-    }
-
-    compoListWillRender.value.splice(targetElIndex, 0, tmpObj);
-  }
-}
-
-/**
- * 拖动过程中添加样式
- * @param {*} e
- */
-function commonToggleDragActiveClass(e) {
-  let targetEl;
-  if (e.path[0].className.includes('main-stage')) {
-    targetEl = e.path[0];
-  } else {
-    // debugger;
-    targetEl = e.path.find(el => {
-      return el.className && el.className.includes('drag-wrapper--in-stage');
-    });
-  }
-
-  targetEl.classList.toggle('__drag-active');
+  putDragElement(e, srcCompo, compoListWillRender.value);
 }
 
 function handleDragEnter(e) {
-  commonToggleDragActiveClass(e);
+  activatedDragClass(e.path);
 }
 
 function handleDragLeave(e) {
-  commonToggleDragActiveClass(e);
+  activatedDragClass(e.path);
 }
 
 /**

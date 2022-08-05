@@ -1,11 +1,15 @@
 <template>
-  <div class="c-header" :style="headerStyle">{{ compoStates.value }}</div>
+  <div class="drag-wrapper--of-compo">
+    <div class="c-header" :style="headerStyle">{{ compoStates.value }}</div>
+  </div>
 </template>
 <script setup>
-import { computed } from 'vue';
+import { computed, onBeforeMount, onMounted, onUnmounted } from 'vue';
+import useLifecycleHook from '@/effects/useLifecycleHook';
 
 const props = defineProps({
-  compoStates: {}
+  compoStates: {},
+  compoActions: {}
 });
 
 const headerStyle = computed(() => {
@@ -15,6 +19,20 @@ const headerStyle = computed(() => {
     fontWeight: props.compoStates.isBold ? 'bold' : 'normal',
     fontSize: `${props.compoStates.fontSize}px`
   };
+});
+
+// useOnBeforeMount, useOnMounted, useOnUnmounted
+
+const { useOnBeforeMount, useOnMounted, useOnUnmounted } = useLifecycleHook(props.compoActions);
+
+onBeforeMount(() => {
+  useOnBeforeMount();
+});
+onMounted(() => {
+  useOnMounted();
+});
+onUnmounted(() => {
+  useOnUnmounted();
 });
 </script>
 <style lang="scss" scoped>

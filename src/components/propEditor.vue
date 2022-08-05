@@ -104,8 +104,8 @@ function showCodeMirror(key) {
 function createFunction() {
   // debugger;
   compoActions.value[currentActionKey.value] = {
-    method: new Function(codeString.value),
-    methodString: codeString.value
+    methodString: codeString.value,
+    compoId: props.activedComponent.id
   };
   showModal.value = false;
 }
