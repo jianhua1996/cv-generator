@@ -6,7 +6,7 @@ export default function (options = {}) {
   }
 
   function changeSelectedCom(item) {
-    debugger;
+    // debugger;
     globalProperties.selectedCom.value = item;
   }
 

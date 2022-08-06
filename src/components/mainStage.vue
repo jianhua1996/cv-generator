@@ -3,6 +3,7 @@
     <div class="main-stage" v-drop="handleDropOnContainer" @dragenter="handleDragEnter" @dragleave="handleDragLeave">
       <div
         :class="['drag-wrapper--in-stage', comWithSelectedClass(item.id)]"
+        @click="changeSelectedCom(item)"
         v-for="(item, index) in compoListWillRender"
         :key="item.id"
         :data-index="index"
@@ -13,7 +14,6 @@
           :compoActions="item.compoActions"
           :__slot="item.__slot"
           :data-index="index"
-          @click="changeSelectedCom(item)"
         ></component>
         <span class="--actions">
           <n-tooltip :show-arrow="false" trigger="hover">
