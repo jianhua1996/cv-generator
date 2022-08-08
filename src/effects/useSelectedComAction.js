@@ -1,25 +1,31 @@
-import { ref, getCurrentInstance } from 'vue';
+import { ref, getCurrentInstance, isRef } from 'vue';
 export default function (options = {}) {
   const { globalProperties } = getCurrentInstance().appContext.config;
   if (!globalProperties.selectedCom) {
     globalProperties.selectedCom = ref({});
   }
+  let lastSelectedComArr;
 
-  function changeSelectedCom(item) {
-    // debugger;
+  function alterSelectedCom(item) {
+    // ;
+    if (!item) return;
+
     globalProperties.selectedCom.value = item;
   }
 
-  function comWithSelectedClass(srcId) {
-    let flag = false;
-    try {
-      flag = srcId === globalProperties.selectedCom.value.id;
-    } catch (e) {}
-    return flag ? '__drag-select' : '';
+  function handleSelectedClass(e) {
+    const el = e.target;
+    // ;
+    if (el.className.includes('main-stage')) return; // 如果是容器本身，则不进行操作
+    if (el.className.includes('__drag-select')) return; // 如果已经添加过class则不进行操作
+    if (lastSelectedComArr) lastSelectedComArr.classList.remove('__drag-select');
+    el.classList.add('__drag-select'); // 添加class
+    lastSelectedComArr = el; // 记录这次的添加
   }
+
   return {
     selectedCom: globalProperties.selectedCom,
-    changeSelectedCom,
-    comWithSelectedClass
+    alterSelectedCom,
+    handleSelectedClass
   };
 }

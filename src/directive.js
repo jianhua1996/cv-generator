@@ -1,7 +1,7 @@
 function regDirective(app) {
   app.directive('dragstart', {
     mounted(el, binding, vnode) {
-      // debugger;
+      // ;
       el.draggable = true;
       const _target = binding.value;
       if (typeof _target === 'object' && _target !== null && typeof _target.fn === 'function') {
@@ -17,7 +17,7 @@ function regDirective(app) {
   });
   app.directive('drop', {
     mounted(el, binding, vnode) {
-      // debugger;
+      // ;
       el.ondragover = function (e) {
         e.preventDefault();
       };

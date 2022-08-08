@@ -36,8 +36,8 @@ import { reactive, ref, provide, onMounted } from 'vue';
 import { NWatermark, NButton, createDiscreteApi } from 'naive-ui'; // 水印
 import compoBox from './components/compoBox.vue'; // 左侧组件盒子
 import mainStage from './components/mainStage.vue'; // 右侧主舞台
-import cComList from './components/c-components/index'; //  所有c-组件
 import { useLSWatcher } from 'next-vue-storage-watcher';
+import useStoreComActions from '@/effects/useStoreComActions';
 
 let message;
 const ls = useLSWatcher();
@@ -50,27 +50,20 @@ const waterMark = reactive({
 const compoListWillRender = ref([]);
 provide('compoListWillRender', compoListWillRender);
 
+const { saveComToStore, loadComFromStore } = useStoreComActions();
+
 function saveStageSnap() {
-  try {
-    ls.setItem(
-      'compo_data',
-      compoListWillRender.value.map(comObj => {
-        // debugger;
-        const o = {
-          ...comObj
-        };
-        delete o.compo; // 为了降低缓存数据的复杂度，不再保存compo字段
-        return o;
-      })
-    );
-    message.success('保存成功');
-  } catch (e) {
-    message.error('保存失败');
-  }
+  saveComToStore(ls, compoListWillRender.value)
+    .then(() => {
+      message.success('保存成功');
+    })
+    .catch(err => {
+      message.error('保存失败');
+    });
 }
 
 function clearStage(clearLocalStorage = false) {
-  // debugger;
+  // ;
   compoListWillRender.value = []; //清空数组
   if (clearLocalStorage) {
     try {
@@ -83,36 +76,12 @@ function clearStage(clearLocalStorage = false) {
 
 onMounted(() => {
   message = createDiscreteApi(['message']).message; // mount之后再使用createDiscreteApi
-  const compoDataSnap = ls.getItem('compo_data'); // 从localStorage中拿到上次保存的组件数据结构
-  if (compoDataSnap.value) {
-    // compoDataSnap.value是之前保存的组件数组。 注意，这里没有保存compo字段，需要根据组件的名称重新加载
-    const loadCompoCache = {};
-    compoListWillRender.value = compoDataSnap.value.map(comObj => {
-      // debugger;
-      let srcCompo;
-      if (loadCompoCache[comObj.name]) {
-        // 如果缓存过该名称对应的组件，则直接取出
-        srcCompo = loadCompoCache[comObj.name];
-      } else {
-        // 否则需要在所有组件里进行查询
-        srcCompo = cComList.find(item => item.name === comObj.name);
-        loadCompoCache[comObj.name] = srcCompo; // 然后缓存该名称对应组件
-      }
-
-      const o = {
-        // 重新赋值一遍
-        id: comObj.id,
-        name: comObj.name,
-        compo: srcCompo.compo,
-        defineStates: srcCompo.defineStates,
-        defineActions: srcCompo.defineActions,
-        compoStates: reactive({ ...comObj.compoStates }), // 这里需要重新赋值一个新的对象，原对象的字段为readonly不可写
-        compoActions: reactive({ ...comObj.compoActions }) // 同上
-      };
-      // debugger;
-      return o;
-    });
-  }
+  loadComFromStore(ls)
+    .then(comList => {
+      // ;
+      compoListWillRender.value = comList;
+    })
+    .catch(err => {});
 });
 </script>
 

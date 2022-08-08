@@ -18,6 +18,14 @@
             <template v-if="item.type === 'select'">
               <n-select v-model:value="compoStates[`${item.colName}`]" :options="item.prop.options" />
             </template>
+            <template v-if="item.type === 'inputNumber'">
+              <n-input-number
+                v-model:value="compoStates[`${item.colName}`]"
+                :step="item.prop.step"
+                :min="item.prop.min"
+                :max="item.prop.max"
+              />
+            </template>
             <template v-if="item.type === 'range'">
               <n-slider
                 v-model:value="compoStates[`${item.colName}`]"
@@ -101,7 +109,7 @@ function showCodeMirror(key) {
 }
 
 function createFunction() {
-  // debugger;
+  // ;
   compoActions.value[currentActionKey.value] = {
     methodString: codeString.value,
     compoId: selectedCom.value.id

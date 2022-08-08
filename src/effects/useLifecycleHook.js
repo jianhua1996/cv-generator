@@ -1,10 +1,10 @@
 export default function (action) {
-  // debugger;
+  // ;
   if (typeof action === 'object' && action !== null) {
     const eventList = ['useOnBeforeMount', 'useOnMounted', 'useOnUnmounted'];
     const wrapper = {};
     eventList.forEach(eventName => {
-      // debugger;
+      // ;
       let fn;
       const oriEName = `o${eventName.slice(4)}`;
       if (action.hasOwnProperty(oriEName)) {

@@ -23,7 +23,7 @@ import { NTag } from 'naive-ui';
 import cComList from './c-components/index.js'; //  所有c-组件
 
 function handleDragStart(e, dataX) {
-  // debugger;
+  // ;
   e.dataTransfer.setData('application/json', JSON.stringify(dataX));
 }
 </script>

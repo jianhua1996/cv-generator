@@ -2,7 +2,7 @@ import { markRaw } from 'vue';
 import Compo from './index.vue';
 
 export default {
-  name: 'Header',
+  name: '标题',
   compo: markRaw(Compo),
   compoStates: {
     value: '我是Header组件',

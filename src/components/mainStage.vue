@@ -1,9 +1,15 @@
 <template>
   <div class="main-stage-wrapper">
-    <div class="main-stage" v-drop="handleDropOnContainer" @dragenter="handleDragEnter" @dragleave="handleDragLeave">
+    <div
+      class="main-stage"
+      v-drop="handleDropOnContainer"
+      @dragenter="handleDragEnter"
+      @dragleave="handleDragLeave"
+      @click="handleSelectedClass"
+    >
       <div
-        :class="['drag-wrapper--in-stage', comWithSelectedClass(item.id)]"
-        @click="changeSelectedCom(item)"
+        class="drag-wrapper--in-stage"
+        @click.capture="alterSelectedCom(item)"
         v-for="(item, index) in compoListWillRender"
         :key="item.id"
         :data-index="index"
@@ -12,8 +18,8 @@
           :is="item.compo"
           :compoStates="item.compoStates"
           :compoActions="item.compoActions"
-          :__slot="item.__slot"
-          :data-index="index"
+          :__slot__="item.__slot__"
+          :parentIndex="index"
         ></component>
         <span class="--actions">
           <n-tooltip :show-arrow="false" trigger="hover">
@@ -35,7 +41,7 @@
   </div>
 </template>
 <script setup>
-import { inject, ref } from 'vue';
+import { inject } from 'vue';
 import cComList from './c-components/index.js'; //  所有c-组件
 import propEditor from './propEditor.vue';
 import { NIcon, NTooltip } from 'naive-ui';
@@ -46,7 +52,7 @@ import useSelectedComAction from '@/effects/useSelectedComAction';
 const compoListWillRender = inject('compoListWillRender');
 
 const { activatedDragClass, putDragElement } = useDragActions();
-const { selectedCom, changeSelectedCom, comWithSelectedClass } = useSelectedComAction();
+const { selectedCom, alterSelectedCom, handleSelectedClass } = useSelectedComAction();
 
 /**
  * drop事件处理器
@@ -55,7 +61,7 @@ const { selectedCom, changeSelectedCom, comWithSelectedClass } = useSelectedComA
 function handleDropOnContainer(e) {
   // drop事件触发
   const transferJSON = e.dataTransfer.getData('application/json');
-  // debugger;
+  // ;
   try {
     const transferData = JSON.parse(transferJSON);
     commonPutCompoFn(e, transferData);
