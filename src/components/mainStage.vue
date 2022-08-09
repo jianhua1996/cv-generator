@@ -8,7 +8,7 @@
       @click="handleSelectedClass"
     >
       <div
-        class="drag-wrapper--in-stage"
+        class="drag-wrapper--on-stage"
         @click.capture="alterSelectedCom(item)"
         v-for="(item, index) in compoListWillRender"
         :key="item.id"
@@ -42,7 +42,7 @@
 </template>
 <script setup>
 import { inject } from 'vue';
-import cComList from './c-components/index.js'; //  所有c-组件
+import originComList from './c-components/index.js'; //  所有c-组件
 import propEditor from './propEditor.vue';
 import { NIcon, NTooltip } from 'naive-ui';
 import { DeleteFilled } from '@vicons/material';
@@ -77,7 +77,7 @@ function handleDropOnContainer(e) {
  */
 function commonPutCompoFn(e, transferData) {
   const { target } = transferData; // 解构参数
-  let srcCompo = cComList.find(item => item.name === target.name); // 找到源组件
+  let srcCompo = originComList.find(item => item.name === target.name); // 找到源组件
 
   putDragElement(e, srcCompo, compoListWillRender.value);
 }
@@ -107,7 +107,7 @@ function removeCompo(index) {
   height: 100%;
   overflow: auto;
   flex: 1;
-  .drag-wrapper--in-stage {
+  .drag-wrapper--on-stage {
     border: 1px dotted rgb(155, 143, 143);
     box-sizing: border-box;
     padding: 2px;

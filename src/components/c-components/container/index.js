@@ -55,5 +55,5 @@ export default {
       key: 'onUnmounted'
     }
   ]),
-  useSlot: true
+  __slot__: []
 };

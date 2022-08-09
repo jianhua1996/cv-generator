@@ -11,6 +11,7 @@ export default function (options = {}) {
     if (!item) return;
 
     globalProperties.selectedCom.value = item;
+    console.log(globalProperties.selectedCom.value, 'selectedCom');
   }
 
   function handleSelectedClass(e) {

@@ -16,8 +16,8 @@
   <!-- 主布局 -->
   <div class="main-wrapper">
     <div class="top">
-      <n-button type="error" @click="clearStage(true)" class="btn-features"> 删除所有组件并清空缓存 </n-button>
-      <n-button type="warning" @click="clearStage()" class="btn-features"> 删除所有组件 </n-button>
+      <n-button type="error" @click="clearStageSnap(true)" class="btn-features"> 删除所有组件并清空缓存 </n-button>
+      <n-button type="warning" @click="clearStageSnap()" class="btn-features"> 删除所有组件 </n-button>
       <n-button type="info" @click="saveStageSnap" class="btn-features"> 保存 </n-button>
     </div>
     <div class="bottom">
@@ -39,18 +39,19 @@ import mainStage from './components/mainStage.vue'; // 右侧主舞台
 import { useLSWatcher } from 'next-vue-storage-watcher';
 import useStoreComActions from '@/effects/useStoreComActions';
 
-let message;
 const ls = useLSWatcher();
 
 const waterMark = reactive({
   show: true,
   content: '前端工程师-陈建华'
-});
+}); // 水印配置
 
-const compoListWillRender = ref([]);
+const compoListWillRender = ref([]); // 主舞台上的组件列表
 provide('compoListWillRender', compoListWillRender);
 
-const { saveComToStore, loadComFromStore } = useStoreComActions();
+let message;
+
+const { saveComToStore, loadComFromStore, clearStoreCom } = useStoreComActions();
 
 function saveStageSnap() {
   saveComToStore(ls, compoListWillRender.value)
@@ -62,26 +63,30 @@ function saveStageSnap() {
     });
 }
 
-function clearStage(clearLocalStorage = false) {
-  // ;
-  compoListWillRender.value = []; //清空数组
-  if (clearLocalStorage) {
-    try {
-      ls.removeItem('compo_data');
-    } catch (e) {
-      console.warn('移除localStorage缓存项 "compo_data" 失败');
-    }
+function loadStageSnap() {
+  loadComFromStore(ls)
+    .then(comList => {
+      compoListWillRender.value = comList;
+    })
+    .catch(err => {});
+}
+
+function clearStageSnap(clearLocal = false) {
+  compoListWillRender.value = []; // 置空数组
+  if (clearLocal) {
+    clearStoreCom(ls)
+      .then(() => {
+        message.success('缓存已清空');
+      })
+      .catch(err => {
+        message.error('缓存清空失败');
+      });
   }
 }
 
 onMounted(() => {
-  message = createDiscreteApi(['message']).message; // mount之后再使用createDiscreteApi
-  loadComFromStore(ls)
-    .then(comList => {
-      // ;
-      compoListWillRender.value = comList;
-    })
-    .catch(err => {});
+  message = createDiscreteApi(['message']).message; // 需要等到App.vue挂载后才能使用createDiscreteApi
+  loadStageSnap();
 });
 </script>
 

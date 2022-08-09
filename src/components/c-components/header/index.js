@@ -74,5 +74,4 @@ export default {
       key: 'onUnmounted'
     }
   ])
-  // useSlot: true
 };

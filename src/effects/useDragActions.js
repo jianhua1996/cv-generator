@@ -4,7 +4,7 @@ import { getRandomString } from '@/utils';
 export default function (options = {}) {
   const classMap = {
     wrapperClassOfCompo: options.wrapperClassOfCompo || 'drag-wrapper--of-compo',
-    wrapperClassInStage: options.wrapperClassInStage || 'drag-wrapper--in-stage',
+    wrapperClassInStage: options.wrapperClassInStage || 'drag-wrapper--on-stage',
     mainStageClass: options.mainStageClass || 'main-stage'
   };
   const activeClass = options.activeClass || '__drag-active';
@@ -63,7 +63,7 @@ export default function (options = {}) {
       case 0:
         parentElIndex = +targetEl.dataset.parentIndex;
         // 判断目标组件是否可使用slot插槽，否则按照下一case类型进行处理
-        if (compoList[parentElIndex].useSlot) {
+        if (compoList[parentElIndex].__slot__) {
           putInCompo();
           break;
         } else {

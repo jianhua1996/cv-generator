@@ -3,7 +3,7 @@
   <div class="compo-box">
     <n-tag
       class="compo-alias"
-      v-for="(item, index) in cComList"
+      v-for="(item, index) in originComList"
       :key="item.name"
       v-dragstart="{
         dataX: {
@@ -20,7 +20,7 @@
 </template>
 <script setup>
 import { NTag } from 'naive-ui';
-import cComList from './c-components/index.js'; //  所有c-组件
+import originComList from './c-components/index.js'; //  所有c-组件
 
 function handleDragStart(e, dataX) {
   // ;
