@@ -1,5 +1,5 @@
 <template>
-  <div class="drag-wrapper--of-compo" :data-parent-index="parentIndex">
+  <div>
     <div class="c-header" :style="headerStyle">{{ compoStates.value }}</div>
   </div>
 </template>
@@ -9,8 +9,7 @@ import useLifecycleHook from '@/effects/useLifecycleHook';
 
 const props = defineProps({
   compoStates: {},
-  compoActions: {},
-  parentIndex: {}
+  compoActions: {}
 });
 
 const headerStyle = computed(() => {

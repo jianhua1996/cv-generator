@@ -14,6 +14,7 @@
         :key="item.id"
         :data-index="index"
       >
+        <!-- 当渲染的组件是容器组件时，才需要__slot__和parentIndex这两个字段。 -->
         <component
           :is="item.compo"
           :compoStates="item.compoStates"
@@ -49,10 +50,11 @@ import { DeleteFilled } from '@vicons/material';
 import useDragActions from '@/effects/useDragActions';
 import useSelectedComAction from '@/effects/useSelectedComAction';
 
+// 注入组件列表数据
 const compoListWillRender = inject('compoListWillRender');
 
-const { activatedDragClass, putDragElement } = useDragActions();
-const { selectedCom, alterSelectedCom, handleSelectedClass } = useSelectedComAction();
+const { toggleDragClass, putDragElement } = useDragActions();
+const { alterSelectedCom, handleSelectedClass } = useSelectedComAction();
 
 /**
  * drop事件处理器
@@ -61,7 +63,6 @@ const { selectedCom, alterSelectedCom, handleSelectedClass } = useSelectedComAct
 function handleDropOnContainer(e) {
   // drop事件触发
   const transferJSON = e.dataTransfer.getData('application/json');
-  // ;
   try {
     const transferData = JSON.parse(transferJSON);
     commonPutCompoFn(e, transferData);
@@ -76,18 +77,19 @@ function handleDropOnContainer(e) {
  * @param {*} transferData
  */
 function commonPutCompoFn(e, transferData) {
-  const { target } = transferData; // 解构参数
+  // 解构传递的参数
+  const { target } = transferData;
   let srcCompo = originComList.find(item => item.name === target.name); // 找到源组件
 
   putDragElement(e, srcCompo, compoListWillRender.value);
 }
 
 function handleDragEnter(e) {
-  activatedDragClass(e.path);
+  toggleDragClass(e.path);
 }
 
 function handleDragLeave(e) {
-  activatedDragClass(e.path);
+  toggleDragClass(e.path);
 }
 
 /**

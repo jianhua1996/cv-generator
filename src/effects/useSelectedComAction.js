@@ -1,26 +1,30 @@
-import { ref, getCurrentInstance, isRef } from 'vue';
+import { ref, getCurrentInstance } from 'vue';
 export default function (options = {}) {
   const { globalProperties } = getCurrentInstance().appContext.config;
   if (!globalProperties.selectedCom) {
     globalProperties.selectedCom = ref({});
   }
+
   let lastSelectedComArr;
-
+  // 保存当前选中的组件对象
   function alterSelectedCom(item) {
-    // ;
     if (!item) return;
-
     globalProperties.selectedCom.value = item;
-    console.log(globalProperties.selectedCom.value, 'selectedCom');
   }
 
+  // 在主舞台内进行点击时，给当前点击的元素添加点击样式
   function handleSelectedClass(e) {
-    const el = e.target;
-    // ;
-    if (el.className.includes('main-stage')) return; // 如果是容器本身，则不进行操作
-    if (el.className.includes('__drag-select')) return; // 如果已经添加过class则不进行操作
+    // debugger;
+    const el = e.target; // 事件触发元素
+
+    // 如果是容器本身，则不进行操作
+    if (el.classList.contains('main-stage')) return;
+    // 如果已经添加过类名，则不进行操作
+    if (el.classList.contains('__drag-select')) return;
+    // 去除上一个元素的点击样式，保证容器内最多只有一个元素有点击样式
     if (lastSelectedComArr) lastSelectedComArr.classList.remove('__drag-select');
-    el.classList.add('__drag-select'); // 添加class
+    // 添加class
+    el.classList.add('__drag-select');
     lastSelectedComArr = el; // 记录这次的添加
   }
 

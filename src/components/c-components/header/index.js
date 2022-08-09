@@ -9,7 +9,7 @@ export default {
     fontSize: 28,
     isBold: true,
     color: '#BE4005FF',
-    align: 'left'
+    align: 'center'
   },
   defineStates: markRaw([
     {

@@ -54,6 +54,5 @@ export default {
       label: '元素取消挂载后',
       key: 'onUnmounted'
     }
-  ]),
-  __slot__: []
+  ])
 };
