@@ -21,8 +21,6 @@ const headerStyle = computed(() => {
   };
 });
 
-// useOnBeforeMount, useOnMounted, useOnUnmounted
-
 const { useOnBeforeMount, useOnMounted, useOnUnmounted } = useLifecycleHook(props.compoActions);
 
 onBeforeMount(() => {

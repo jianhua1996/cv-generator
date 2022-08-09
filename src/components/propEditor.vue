@@ -109,7 +109,6 @@ function showCodeMirror(key) {
 }
 
 function createFunction() {
-  // ;
   compoActions.value[currentActionKey.value] = {
     methodString: codeString.value,
     compoId: selectedCom.value.id

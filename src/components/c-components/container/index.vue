@@ -21,7 +21,8 @@
 <script setup>
 import { NGrid, NGi } from 'naive-ui';
 import useSelectedComAction from '@/effects/useSelectedComAction';
-import { ref, watchEffect } from 'vue';
+import { ref, watchEffect, onBeforeMount, onMounted, onUnmounted } from 'vue';
+import useLifecycleHook from '@/effects/useLifecycleHook';
 
 const props = defineProps({
   compoStates: {},
@@ -39,6 +40,18 @@ watchEffect(() => {
 });
 
 const { alterSelectedCom } = useSelectedComAction();
+
+const { useOnBeforeMount, useOnMounted, useOnUnmounted } = useLifecycleHook(props.compoActions);
+
+onBeforeMount(() => {
+  useOnBeforeMount();
+});
+onMounted(() => {
+  useOnMounted();
+});
+onUnmounted(() => {
+  useOnUnmounted();
+});
 </script>
 
 <style lang="scss" scoped></style>
