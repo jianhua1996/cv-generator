@@ -6,7 +6,7 @@ export default {
   compo: markRaw(Compo),
   compoStates: {
     xGap: 0,
-    colsCount: 3
+    colsCount: 2
   },
   defineStates: markRaw([
     {

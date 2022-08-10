@@ -9,6 +9,7 @@ export default function (options = {}) {
   // 保存当前选中的组件对象
   function alterSelectedCom(item) {
     if (!item) return;
+    // debugger;
     globalProperties.selectedCom.value = item;
   }
 

@@ -1,10 +1,9 @@
 <template>
   <n-grid :x-gap="compoStates.xGap" :cols="compoStates.colsCount">
     <n-gi
-      class="drag-wrapper--of-compo"
-      @click="alterSelectedCom(selfData[index])"
+      class="drag-wrapper--of-container"
       v-for="(item, index) in Array(compoStates.colsCount)"
-      :data-parent-index="parentIndex"
+      :data-index-path="indexPath"
       :data-index="index"
     >
       <component
@@ -12,6 +11,9 @@
         :is="selfData[index].compo"
         :compoStates="selfData[index].compoStates"
         :compoActions="selfData[index].compoActions"
+        :__slot__="selfData[index].__slot__"
+        :indexPath="`${indexPath}-${index}`"
+        @click.capture="alterSelectedCom(selfData[index])"
       ></component>
       <div v-else>拖动组件到容器内</div>
     </n-gi>
@@ -28,7 +30,7 @@ const props = defineProps({
   compoStates: {},
   compoActions: {},
   __slot__: {},
-  parentIndex: {}
+  indexPath: {}
 });
 
 const selfData = ref([]);

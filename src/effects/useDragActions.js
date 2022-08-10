@@ -4,7 +4,7 @@ import { getRandomString } from '@/utils';
 export default function (options = {}) {
   // 配置三种目标元素对应的类名： wrapperClassOfCompo对应容器内的包装元素类名、wrapperClassOnStage对应舞台上的包装元素类名、mainStageClass对应主舞台的类名
   const classMap = {
-    wrapperClassOfCompo: 'drag-wrapper--of-compo',
+    wrapperClassOfContainer: 'drag-wrapper--of-container',
     wrapperClassOnStage: 'drag-wrapper--on-stage',
     mainStageClass: 'main-stage'
   };
@@ -48,8 +48,8 @@ export default function (options = {}) {
     // 给组件初始化一个id
     tmpObj.id = getRandomString({ type: 'mixed' });
 
-    // parentElIndex 只有第一种元素有，保存父元素在组件列表中的index
-    let parentElIndex;
+    //  targetElIndexPath只有第一种元素有
+    let targetElIndexPath;
     // targetElIndex 前两种元素有，当类型为第一种时，表示当前元素在slot列表中的index、当类型为第二种时，表示当前元素在组件列表中的index
     let targetElIndex = +targetEl.dataset.index;
 
@@ -57,7 +57,7 @@ export default function (options = {}) {
     // debugger;
     switch (deep) {
       case 0:
-        parentElIndex = +targetEl.dataset.parentIndex;
+        targetElIndexPath = targetEl.dataset.indexPath.split('-');
         putInCompo();
         break;
       case 1:
@@ -70,17 +70,15 @@ export default function (options = {}) {
 
     // 放置到容器内的包装元素里
     function putInCompo() {
-      const targetCompo = compoList[parentElIndex]; // 取出父元素的组件对象
-      const slotList = targetCompo.__slot__ || []; // 判断是否为首次拖拽
-
-      slotList[targetElIndex] = tmpObj;
-      // 浅拷贝以下父元素的组件对象，并添加__slot__字段
-      const targetObj = {
-        ...targetCompo,
-        __slot__: slotList
-      };
-
-      compoList.splice(parentElIndex, 1, targetObj); // 替换源对象
+      let targetList = compoList;
+      let targetCompo;
+      targetElIndexPath.forEach(index => {
+        targetCompo = targetList[index];
+        targetList = targetCompo.__slot__ || [];
+      });
+      // debugger;
+      targetList[targetElIndex] = tmpObj;
+      targetCompo.__slot__ = targetList;
     }
     // 放置到舞台上的包装元素里
     function putOnStageWrapper() {

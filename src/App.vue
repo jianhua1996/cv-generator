@@ -43,7 +43,7 @@ const ls = useLSWatcher();
 
 const waterMark = reactive({
   show: true,
-  content: '前端工程师-陈建华'
+  content: '简易低代码平台demo'
 }); // 水印配置
 
 const compoListWillRender = ref([]); // 主舞台上的组件列表

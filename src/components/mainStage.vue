@@ -9,7 +9,6 @@
     >
       <div
         class="drag-wrapper--on-stage"
-        @click.capture="alterSelectedCom(item)"
         v-for="(item, index) in compoListWillRender"
         :key="item.id"
         :data-index="index"
@@ -20,7 +19,8 @@
           :compoStates="item.compoStates"
           :compoActions="item.compoActions"
           :__slot__="item.__slot__"
-          :parentIndex="index"
+          :indexPath="index"
+          @click.capture="alterSelectedCom(item)"
         ></component>
         <span class="--actions">
           <n-tooltip :show-arrow="false" trigger="hover">
