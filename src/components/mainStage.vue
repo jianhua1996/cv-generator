@@ -8,7 +8,7 @@
       @click="handleSelectedClass"
     >
       <div
-        class="drag-wrapper--on-stage"
+        class="__drag-wrapper--on-stage"
         v-for="(item, index) in compoListWillRender"
         :key="item.id"
         :data-index="index"
@@ -109,7 +109,7 @@ function removeCompo(index) {
   height: 100%;
   overflow: auto;
   flex: 1;
-  .drag-wrapper--on-stage {
+  .__drag-wrapper--on-stage {
     border: 1px dotted rgb(155, 143, 143);
     box-sizing: border-box;
     padding: 2px;
@@ -149,8 +149,15 @@ function removeCompo(index) {
   height: 100%;
   overflow: auto;
 }
-
+</style>
+<style lang="scss">
 .__drag-active {
   box-shadow: inset 2px 2px rgb(215, 37, 37), inset -2px -2px rgb(215, 37, 37);
+}
+.__drag-select {
+  box-shadow: inset 2px 2px rgb(77, 77, 231), inset -2px -2px rgb(77, 77, 231);
+  .--actions {
+    display: flex !important;
+  }
 }
 </style>

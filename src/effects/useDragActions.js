@@ -1,37 +1,30 @@
 import { reactive } from 'vue';
 import { getRandomString } from '@/utils';
 
-export default function (options = {}) {
-  // 配置三种目标元素对应的类名： wrapperClassOfCompo对应容器内的包装元素类名、wrapperClassOnStage对应舞台上的包装元素类名、mainStageClass对应主舞台的类名
-  const classMap = {
-    wrapperClassOfContainer: 'drag-wrapper--of-container',
-    wrapperClassOnStage: 'drag-wrapper--on-stage',
-    mainStageClass: 'main-stage'
-  };
-  // 元素拖拽过程中的激活类名
-  const activeClass = '__drag-active';
+const dragClassList = ['__drag-wrapper--of-container', '__drag-wrapper--on-stage', 'main-stage'];
 
-  const classList = Object.values(classMap);
+const activeClass = '__drag-active';
 
-  // 在drop事件的触发列表(元素)中，查找匹配classList数组类名的元素，classList的匹配顺序是从前向后匹配
-  function findTargetEl(ePath) {
-    let targetEl;
-    for (let i = 0; i < ePath.length; i++) {
-      // 循环drag事件的触发列表
-      for (let j = 0; j < classList.length; j++) {
-        // 按照classList从前向后的顺序，判断触发列表中是否有目标类名
-        if (ePath[i].classList.contains(classList[j])) {
-          // 如果有，则返回该元素
-          targetEl = ePath[i];
-          return {
-            deep: j,
-            targetEl
-          };
-        }
+//  在事件的触发列表中匹配传入的classList，每次匹配一个，只匹配类名
+export function findTargetEl(ePath, classList = dragClassList) {
+  let targetEl;
+  for (let i = 0; i < ePath.length; i++) {
+    // 循环drag事件的触发列表
+    for (let j = 0; j < classList.length; j++) {
+      // 按照classList从前向后的顺序，判断触发列表中是否有目标类名
+      if (ePath[i].classList.contains(classList[j])) {
+        // 如果有，则返回该元素
+        targetEl = ePath[i];
+        return {
+          deep: j,
+          targetEl
+        };
       }
     }
   }
+}
 
+export default function (options = {}) {
   function putDragElement(e, srcCompo, compoList) {
     // deep是classList的索引值，用来区分目标元素的类型
     const { targetEl, deep } = findTargetEl(e.path);

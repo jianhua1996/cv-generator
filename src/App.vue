@@ -121,11 +121,3 @@ onMounted(() => {
   }
 }
 </style>
-<style lang="scss">
-.__drag-select {
-  box-shadow: inset 2px 2px rgb(77, 77, 231), inset -2px -2px rgb(77, 77, 231);
-  .--actions {
-    display: flex !important;
-  }
-}
-</style>

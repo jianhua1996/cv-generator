@@ -1,7 +1,7 @@
 <template>
   <n-grid :x-gap="compoStates.xGap" :cols="compoStates.colsCount">
     <n-gi
-      class="drag-wrapper--of-container"
+      class="__drag-wrapper--of-container"
       v-for="(item, index) in Array(compoStates.colsCount)"
       :data-index-path="indexPath"
       :data-index="index"
