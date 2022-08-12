@@ -17,7 +17,9 @@ const headerStyle = computed(() => {
     color: props.compoStates.color,
     textAlign: props.compoStates.align,
     fontWeight: props.compoStates.isBold ? 'bold' : 'normal',
-    fontSize: `${props.compoStates.fontSize}px`
+    fontSize: `${props.compoStates.fontSize}px`,
+    backgroundColor: props.compoStates.bgColor,
+    textDecoration: `${props.compoStates.decoration} ${props.compoStates.color}`
   };
 });
 
@@ -35,7 +37,8 @@ onUnmounted(() => {
 </script>
 <style lang="scss" scoped>
 .c-header {
-  //
   margin: 0.55em 0;
+  word-break: break-all;
+  text-underline-position: under;
 }
 </style>

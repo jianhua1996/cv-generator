@@ -94,6 +94,7 @@ onMounted(() => {
 .main-wrapper {
   display: flex;
   height: 100vh;
+  overflow: hidden;
   padding: 0 12px;
   box-sizing: border-box;
   flex-direction: column;

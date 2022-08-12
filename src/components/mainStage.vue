@@ -107,12 +107,8 @@ function removeCompo(index) {
 }
 .main-stage {
   height: 100%;
-  overflow: auto;
   flex: 1;
   .__drag-wrapper--on-stage {
-    border: 1px dotted rgb(155, 143, 143);
-    box-sizing: border-box;
-    padding: 2px;
     position: relative;
     .--actions {
       position: absolute;
@@ -147,10 +143,14 @@ function removeCompo(index) {
   width: 240px;
   background-color: #fff;
   height: 100%;
-  overflow: auto;
 }
 </style>
 <style lang="scss">
+.__drag-wrapper--on-stage,
+.__drag-wrapper--of-container {
+  border: 1px dotted rgba(0, 0, 0, 0.3);
+  box-sizing: border-box;
+}
 .__drag-active {
   box-shadow: inset 2px 2px rgb(215, 37, 37), inset -2px -2px rgb(215, 37, 37);
 }

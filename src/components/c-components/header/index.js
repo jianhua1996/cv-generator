@@ -9,7 +9,9 @@ export default {
     fontSize: 28,
     isBold: true,
     color: '#BE4005FF',
-    align: 'center'
+    bgColor: '#DDDDDDFF',
+    align: 'center',
+    decoration: ''
   },
   defineStates: markRaw([
     {
@@ -28,14 +30,14 @@ export default {
       }
     },
     {
-      label: '是否加粗',
-      colName: 'isBold',
-      type: 'switch'
-    },
-    {
       label: '字体颜色',
       colName: 'color',
       type: 'colorPicker'
+    },
+    {
+      label: '是否加粗',
+      colName: 'isBold',
+      type: 'switch'
     },
     {
       label: '水平对齐',
@@ -54,6 +56,36 @@ export default {
           {
             label: '居右',
             value: 'right'
+          }
+        ]
+      }
+    },
+    {
+      label: '背景颜色',
+      colName: 'bgColor',
+      type: 'colorPicker'
+    },
+    {
+      label: '文字修饰',
+      colName: 'decoration',
+      type: 'select',
+      prop: {
+        options: [
+          {
+            label: '下划线',
+            value: 'underline'
+          },
+          {
+            label: '波浪线',
+            value: 'underline wavy'
+          },
+          {
+            label: '删除线',
+            value: 'line-through'
+          },
+          {
+            label: '无效果',
+            value: ''
           }
         ]
       }

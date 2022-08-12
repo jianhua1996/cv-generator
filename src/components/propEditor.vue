@@ -2,50 +2,52 @@
   <div class="prop-editor">
     <n-tabs type="segment" animated>
       <n-tab-pane name="com-states" tab="组件状态">
-        <n-card size="small" embedded :title="'当前组件'" v-show="selectedCom.id">
-          <div>组件名：{{ selectedCom.name }}</div>
-          <div>组件ID：{{ selectedCom.id }}</div>
-        </n-card>
-        <div class="state-row" v-for="item in defineStates">
-          <div class="top">{{ item.label }} ：</div>
-          <div class="bottom">
-            <template v-if="item.type === 'input'">
-              <n-input v-model:value="compoStates[`${item.colName}`]" />
-            </template>
-            <template v-if="item.type === 'switch'">
-              <n-switch v-model:value="compoStates[`${item.colName}`]" />
-            </template>
-            <template v-if="item.type === 'select'">
-              <n-select v-model:value="compoStates[`${item.colName}`]" :options="item.prop.options" />
-            </template>
-            <template v-if="item.type === 'inputNumber'">
-              <n-input-number
-                v-model:value="compoStates[`${item.colName}`]"
-                :step="item.prop.step"
-                :min="item.prop.min"
-                :max="item.prop.max"
-              />
-            </template>
-            <template v-if="item.type === 'range'">
-              <n-slider
-                v-model:value="compoStates[`${item.colName}`]"
-                :step="item.prop.step"
-                :min="item.prop.min"
-                :max="item.prop.max"
-              />
-              <n-input-number
-                v-model:value="compoStates[`${item.colName}`]"
-                :step="item.prop.step"
-                :min="item.prop.min"
-                :max="item.prop.max"
-                size="small"
-              />
-            </template>
-            <template v-if="item.type === 'colorPicker'">
-              <n-color-picker v-model:value="compoStates[`${item.colName}`]" :modes="['hex']" />
-            </template>
+        <n-scrollbar style="max-height: calc(100vh - 95px)">
+          <n-card size="small" embedded :title="'当前组件'" v-show="selectedCom.id">
+            <div>组件名：{{ selectedCom.name }}</div>
+            <div>组件ID：{{ selectedCom.id }}</div>
+          </n-card>
+          <div class="state-row" v-for="item in defineStates">
+            <div class="top">{{ item.label }} ：</div>
+            <div class="bottom">
+              <template v-if="item.type === 'input'">
+                <n-input v-model:value="compoStates[`${item.colName}`]" />
+              </template>
+              <template v-if="item.type === 'switch'">
+                <n-switch v-model:value="compoStates[`${item.colName}`]" />
+              </template>
+              <template v-if="item.type === 'select'">
+                <n-select v-model:value="compoStates[`${item.colName}`]" :options="item.prop.options" />
+              </template>
+              <template v-if="item.type === 'inputNumber'">
+                <n-input-number
+                  v-model:value="compoStates[`${item.colName}`]"
+                  :step="item.prop.step"
+                  :min="item.prop.min"
+                  :max="item.prop.max"
+                />
+              </template>
+              <template v-if="item.type === 'range'">
+                <n-slider
+                  v-model:value="compoStates[`${item.colName}`]"
+                  :step="item.prop.step"
+                  :min="item.prop.min"
+                  :max="item.prop.max"
+                />
+                <n-input-number
+                  v-model:value="compoStates[`${item.colName}`]"
+                  :step="item.prop.step"
+                  :min="item.prop.min"
+                  :max="item.prop.max"
+                  size="small"
+                />
+              </template>
+              <template v-if="item.type === 'colorPicker'">
+                <n-color-picker v-model:value="compoStates[`${item.colName}`]" :modes="['hex']" :show-preview="true" />
+              </template>
+            </div>
           </div>
-        </div>
+        </n-scrollbar>
       </n-tab-pane>
       <n-tab-pane name="com-actions" tab="组件行为">
         <n-list bordered>
@@ -82,7 +84,8 @@ import {
   NList,
   NListItem,
   NModal,
-  NButton
+  NButton,
+  NScrollbar
 } from 'naive-ui';
 import useSelectedComAction from '@/effects/useSelectedComAction';
 
