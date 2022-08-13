@@ -35,6 +35,7 @@ function handleDragStart(e, dataX) {
   .compo-alias {
     width: 46%;
     justify-content: center;
+    margin-bottom: 0.75em;
   }
 }
 </style>

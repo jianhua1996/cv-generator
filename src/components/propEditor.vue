@@ -13,21 +13,32 @@
               <template v-if="item.type === 'input'">
                 <n-input v-model:value="compoStates[`${item.colName}`]" />
               </template>
-              <template v-if="item.type === 'switch'">
+              <template v-else-if="item.type === 'switch'">
                 <n-switch v-model:value="compoStates[`${item.colName}`]" />
               </template>
-              <template v-if="item.type === 'select'">
+              <template v-else-if="item.type === 'select'">
                 <n-select v-model:value="compoStates[`${item.colName}`]" :options="item.prop.options" />
               </template>
-              <template v-if="item.type === 'inputNumber'">
+              <template v-else-if="item.type === 'inputNumber'">
                 <n-input-number
                   v-model:value="compoStates[`${item.colName}`]"
                   :step="item.prop.step"
                   :min="item.prop.min"
                   :max="item.prop.max"
+                  :precision="item.prop.precision"
                 />
               </template>
-              <template v-if="item.type === 'range'">
+              <template v-else-if="item.type === 'textarea'">
+                <n-input
+                  v-model:value="compoStates[`${item.colName}`]"
+                  type="textarea"
+                  :autosize="{
+                    minRows: item.prop.minRows,
+                    maxRows: item.prop.maxRows
+                  }"
+                />
+              </template>
+              <template v-else-if="item.type === 'range'">
                 <n-slider
                   v-model:value="compoStates[`${item.colName}`]"
                   :step="item.prop.step"
@@ -39,10 +50,11 @@
                   :step="item.prop.step"
                   :min="item.prop.min"
                   :max="item.prop.max"
+                  :precision="item.prop.precision"
                   size="small"
                 />
               </template>
-              <template v-if="item.type === 'colorPicker'">
+              <template v-else-if="item.type === 'colorPicker'">
                 <n-color-picker v-model:value="compoStates[`${item.colName}`]" :modes="['hex']" :show-preview="true" />
               </template>
             </div>

@@ -36,7 +36,8 @@ export default {
       type: 'inputNumber',
       prop: {
         step: 1,
-        min: 0
+        min: 0,
+        precision: 0
       }
     }
   ]),

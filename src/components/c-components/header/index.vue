@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="c-header" :style="headerStyle">{{ compoStates.value }}</div>
+    <div class="c-header" :style="customStyle">{{ compoStates.value }}</div>
   </div>
 </template>
 <script setup>
@@ -12,7 +12,7 @@ const props = defineProps({
   compoActions: {}
 });
 
-const headerStyle = computed(() => {
+const customStyle = computed(() => {
   return {
     color: props.compoStates.color,
     textAlign: props.compoStates.align,

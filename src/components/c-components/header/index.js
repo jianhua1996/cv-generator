@@ -24,9 +24,10 @@ export default {
       colName: 'fontSize',
       type: 'range',
       prop: {
-        step: 2,
+        step: 1,
         min: 16,
-        max: 36
+        max: 36,
+        precision: 0
       }
     },
     {
