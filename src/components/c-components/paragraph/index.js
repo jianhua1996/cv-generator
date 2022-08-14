@@ -76,7 +76,7 @@ export default {
       }
     },
     {
-      label: '超出行隐藏',
+      label: '溢出行隐藏',
       colName: 'lineClamp',
       type: 'inputNumber',
       prop: {

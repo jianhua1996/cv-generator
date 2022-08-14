@@ -1,4 +1,5 @@
 import { ref, getCurrentInstance } from 'vue';
+import { findTargetEl } from './useDragActions';
 export default function (options = {}) {
   const { globalProperties } = getCurrentInstance().appContext.config;
   if (!globalProperties.selectedCom) {
@@ -15,18 +16,18 @@ export default function (options = {}) {
 
   // 在主舞台内进行点击时，给当前点击的元素添加点击样式
   function handleSelectedClass(e) {
+    const { targetEl } = findTargetEl(e.path);
     // debugger;
-    const el = e.target; // 事件触发元素
 
     // 如果是容器本身，则不进行操作
-    if (el.classList.contains('main-stage')) return;
+    if (targetEl.classList.contains('main-stage')) return;
     // 如果已经添加过类名，则不进行操作
-    if (el.classList.contains('__drag-select')) return;
+    if (targetEl.classList.contains('__drag-select')) return;
     // 去除上一个元素的点击样式，保证容器内最多只有一个元素有点击样式
     if (lastSelectedComArr) lastSelectedComArr.classList.remove('__drag-select');
     // 添加class
-    el.classList.add('__drag-select');
-    lastSelectedComArr = el; // 记录这次的添加
+    targetEl.classList.add('__drag-select');
+    lastSelectedComArr = targetEl; // 记录这次的添加
   }
 
   return {
