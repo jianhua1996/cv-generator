@@ -31,6 +31,7 @@ export default function (options = {}) {
     // 移除active效果
     deactivatedDragClass(targetEl);
     // 浅拷贝一下源组件的组件数据，保证每个渲染组件的compoStates、compoActions都是独立且响应式的
+    // debugger;
     const tmpObj = {
       ...srcCompo,
       compoStates: reactive({

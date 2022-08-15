@@ -1,4 +1,4 @@
-import { markRaw } from 'vue';
+import { markRaw, ref } from 'vue';
 import Compo from './index.vue';
 
 export default {
@@ -6,7 +6,9 @@ export default {
   compo: markRaw(Compo),
   compoStates: {
     listStyle: 'type1',
-    listColor: '#000000FF'
+    listColor: '#000000FF',
+    listData: ['这是标题', '这是一段正文这是一段正文这是一段正文这是一段正文这是一段正文'],
+    isEditable: true
   },
   defineStates: markRaw([
     {
@@ -38,6 +40,11 @@ export default {
       label: '列表图标颜色',
       colName: 'listColor',
       type: 'colorPicker'
+    },
+    {
+      label: '列表可编辑状态',
+      colName: 'isEditable',
+      type: 'switch'
     }
   ]),
   compoActions: {},

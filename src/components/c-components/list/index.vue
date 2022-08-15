@@ -1,6 +1,7 @@
 <template>
   <div>
     <n-dynamic-tags
+      :class="compoStates.isEditable ? 'list-com-show' : 'list-com-hide'"
       v-model:value="tags"
       :input-props="inputProps"
       input-style="line-height: 1.5em;"
@@ -11,7 +12,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, Fragment, onBeforeMount, onMounted, onUnmounted } from 'vue';
+import { ref, reactive, computed, Fragment, onBeforeMount, onMounted, onUnmounted, watch } from 'vue';
 import { NDynamicTags, NTag, NIcon, NInput } from 'naive-ui';
 import { FilterVintageOutlined, EmergencyOutlined, GradeRound, HiveTwotone, EditFilled } from '@vicons/material';
 import useLifecycleHook from '@/effects/useLifecycleHook';
@@ -78,6 +79,7 @@ function renderTag(tag, index) {
           <Fragment>
             <span>{tag}</span>
             <NIcon
+              class="--editable-icon"
               style="margin-left: 1.25em; cursor: pointer; font-weight: normal;"
               size="16"
               onClick={handleEdit.bind(null, index)}
@@ -107,6 +109,15 @@ function renderIcon() {
 const { useOnBeforeMount, useOnMounted, useOnUnmounted } = useLifecycleHook(props.compoActions);
 
 onBeforeMount(() => {
+  // debugger;
+  tags.value = props.compoStates.listData;
+  watch(
+    tags,
+    () => {
+      props.compoStates.listData = tags.value;
+    },
+    { deep: true }
+  );
   useOnBeforeMount();
 });
 onMounted(() => {
@@ -120,6 +131,12 @@ onUnmounted(() => {
 <style lang="scss" scoped>
 :deep(.n-dynamic-tags) {
   flex-direction: column !important;
+  &.list-com-hide {
+    .n-button,
+    .--editable-icon {
+      display: none;
+    }
+  }
 }
 :deep(.n-tag) {
   background-color: transparent;

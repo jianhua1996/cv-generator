@@ -7,34 +7,36 @@
       @dragleave="handleDragLeave"
       @click="handleSelectedClass"
     >
-      <div
-        class="__drag-wrapper--on-stage"
-        v-for="(item, index) in compoListWillRender"
-        :key="item.id"
-        :data-index="index"
-      >
-        <!-- 当渲染的组件是容器组件时，才需要__slot__和parentIndex这两个字段。 -->
-        <component
-          :is="item.compo"
-          :compoStates="item.compoStates"
-          :compoActions="item.compoActions"
-          :__slot__="item.__slot__"
-          :indexPath="index"
-          @click.capture="alterSelectedCom(item)"
-        ></component>
-        <span class="--actions">
-          <n-tooltip :show-arrow="false" trigger="hover">
-            <template #trigger>
-              <span class="info">组件id</span>
-            </template>
-            {{ item.id }}
-          </n-tooltip>
+      <n-scrollbar style="max-height: calc(100vh - 42px)">
+        <div
+          class="__drag-wrapper--on-stage"
+          v-for="(item, index) in compoListWillRender"
+          :key="item.id"
+          :data-index="index"
+        >
+          <!-- 当渲染的组件是容器组件时，才需要__slot__和parentIndex这两个字段。 -->
+          <component
+            :is="item.compo"
+            :compoStates="item.compoStates"
+            :compoActions="item.compoActions"
+            :__slot__="item.__slot__"
+            :indexPath="index"
+            @click.capture="alterSelectedCom(item)"
+          ></component>
+          <span class="--actions">
+            <n-tooltip :show-arrow="false" trigger="hover">
+              <template #trigger>
+                <span class="info">组件id</span>
+              </template>
+              {{ item.id }}
+            </n-tooltip>
 
-          <n-icon class="delete" @click="removeCompo(index)">
-            <DeleteFilled />
-          </n-icon>
-        </span>
-      </div>
+            <n-icon class="delete" @click="removeCompo(index)">
+              <DeleteFilled />
+            </n-icon>
+          </span>
+        </div>
+      </n-scrollbar>
     </div>
     <div class="prop-editor-wrapper">
       <propEditor />
@@ -45,7 +47,7 @@
 import { inject } from 'vue';
 import originComList from './c-components/index.js'; //  所有c-组件
 import propEditor from './propEditor.vue';
-import { NIcon, NTooltip } from 'naive-ui';
+import { NIcon, NTooltip, NScrollbar } from 'naive-ui';
 import { DeleteFilled } from '@vicons/material';
 import useDragActions from '@/effects/useDragActions';
 import useSelectedComAction from '@/effects/useSelectedComAction';
