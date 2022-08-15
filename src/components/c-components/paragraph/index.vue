@@ -7,8 +7,9 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, onBeforeMount, onMounted, onUnmounted } from 'vue';
 import { NEllipsis } from 'naive-ui';
+import useLifecycleHook from '@/effects/useLifecycleHook';
 const props = defineProps({
   compoStates: {},
   compoActions: {}
@@ -21,6 +22,18 @@ const customStyle = computed(() => {
     color: props.compoStates.color,
     textDecoration: `${props.compoStates.decoration} ${props.compoStates.color}`
   };
+});
+
+const { useOnBeforeMount, useOnMounted, useOnUnmounted } = useLifecycleHook(props.compoActions);
+
+onBeforeMount(() => {
+  useOnBeforeMount();
+});
+onMounted(() => {
+  useOnMounted();
+});
+onUnmounted(() => {
+  useOnUnmounted();
 });
 </script>
 

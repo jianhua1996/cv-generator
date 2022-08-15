@@ -11,9 +11,15 @@
 </template>
 
 <script setup>
-import { ref, h, reactive, computed, Fragment } from 'vue';
+import { ref, reactive, computed, Fragment, onBeforeMount, onMounted, onUnmounted } from 'vue';
 import { NDynamicTags, NTag, NIcon, NInput } from 'naive-ui';
-import { FilterVintageTwotone, EditFilled } from '@vicons/material';
+import { FilterVintageOutlined, EmergencyOutlined, GradeRound, HiveTwotone, EditFilled } from '@vicons/material';
+import useLifecycleHook from '@/effects/useLifecycleHook';
+
+const props = defineProps({
+  compoStates: {},
+  compoActions: {}
+});
 
 const tags = ref([]);
 
@@ -53,8 +59,8 @@ function renderTag(tag, index) {
     <NTag>
       <div class={isTitle ? 'header' : 'paragraph'}>
         {isTitle && (
-          <NIcon style="margin-right: 0.5em;" color="rgb(62 123 20)">
-            <FilterVintageTwotone />
+          <NIcon style="margin-right: 0.5em;" color={props.compoStates.listColor}>
+            {renderIcon()}
           </NIcon>
         )}
         {index === currentIndex.value ? (
@@ -84,6 +90,31 @@ function renderTag(tag, index) {
     </NTag>
   );
 }
+
+function renderIcon() {
+  switch (props.compoStates.listStyle) {
+    case 'type1':
+      return <FilterVintageOutlined />;
+    case 'type2':
+      return <EmergencyOutlined />;
+    case 'type3':
+      return <GradeRound />;
+    case 'type4':
+      return <HiveTwotone />;
+  }
+}
+
+const { useOnBeforeMount, useOnMounted, useOnUnmounted } = useLifecycleHook(props.compoActions);
+
+onBeforeMount(() => {
+  useOnBeforeMount();
+});
+onMounted(() => {
+  useOnMounted();
+});
+onUnmounted(() => {
+  useOnUnmounted();
+});
 </script>
 
 <style lang="scss" scoped>

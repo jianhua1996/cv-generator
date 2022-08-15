@@ -4,8 +4,42 @@ import Compo from './index.vue';
 export default {
   name: '列表',
   compo: markRaw(Compo),
-  compoStates: {},
-  defineStates: markRaw([]),
+  compoStates: {
+    listStyle: 'type1',
+    listColor: '#000000FF'
+  },
+  defineStates: markRaw([
+    {
+      label: '列表图标样式',
+      colName: 'listStyle',
+      type: 'select',
+      prop: {
+        options: [
+          {
+            label: '样式一',
+            value: 'type1'
+          },
+          {
+            label: '样式二',
+            value: 'type2'
+          },
+          {
+            label: '样式三',
+            value: 'type3'
+          },
+          {
+            label: '样式四',
+            value: 'type4'
+          }
+        ]
+      }
+    },
+    {
+      label: '列表图标颜色',
+      colName: 'listColor',
+      type: 'colorPicker'
+    }
+  ]),
   compoActions: {},
   defineActions: markRaw([
     {
