@@ -6,10 +6,10 @@ export default {
   compo: markRaw(Compo),
   compoStates: {
     value: '我是Header组件',
-    fontSize: 28,
+    fontSize: 20,
     isBold: true,
-    color: '#BE4005FF',
-    bgColor: '#DDDDDDFF',
+    color: '#4D4DE7FF',
+    bgColor: '#DDDDDD00',
     align: 'center',
     decoration: ''
   },

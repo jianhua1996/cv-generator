@@ -1,14 +1,13 @@
 <template>
   <div class="paragraph">
-    <n-ellipsis expand-trigger="click" :line-clamp="compoStates.lineClamp" :tooltip="false" :style="customStyle">
+    <p :style="customStyle">
       {{ compoStates.textContent }}
-    </n-ellipsis>
+    </p>
   </div>
 </template>
 
 <script setup>
 import { computed, onBeforeMount, onMounted, onUnmounted } from 'vue';
-import { NEllipsis } from 'naive-ui';
 import useLifecycleHook from '@/effects/useLifecycleHook';
 const props = defineProps({
   compoStates: {},

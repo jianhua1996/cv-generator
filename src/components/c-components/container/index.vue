@@ -1,7 +1,7 @@
 <template>
   <n-grid :x-gap="compoStates.xGap || 0" :cols="compoStates.colsCount">
     <n-gi
-      class="__drag-wrapper--of-container"
+      :class="['__drag-wrapper--of-container', isProd ? '--prodction-mode' : '--development-mode']"
       v-for="(item, index) in Array(compoStates.colsCount)"
       :data-index-path="indexPath"
       :data-index="index"
@@ -23,7 +23,7 @@
 <script setup>
 import { NGrid, NGi } from 'naive-ui';
 import useSelectedComAction from '@/effects/useSelectedComAction';
-import { ref, watchEffect, onBeforeMount, onMounted, onUnmounted } from 'vue';
+import { ref, watchEffect, onBeforeMount, onMounted, onUnmounted, inject } from 'vue';
 import useLifecycleHook from '@/effects/useLifecycleHook';
 
 const props = defineProps({
@@ -33,6 +33,7 @@ const props = defineProps({
   indexPath: {}
 });
 
+const isProd = inject('isProd');
 const selfData = ref([]);
 
 watchEffect(() => {

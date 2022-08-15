@@ -8,8 +8,21 @@
       @click="handleSelectedClass"
     >
       <n-scrollbar style="max-height: calc(100vh - 42px)">
+        <n-watermark
+          v-if="waterMark.show"
+          :content="waterMark.content"
+          cross
+          fullscreen
+          :font-size="28"
+          :line-height="16"
+          :width="750"
+          :height="300"
+          :x-offset="-120"
+          :y-offset="250"
+          :rotate="-30"
+        />
         <div
-          class="__drag-wrapper--on-stage"
+          :class="['__drag-wrapper--on-stage', isProd ? '--prodction-mode' : '--development-mode']"
           v-for="(item, index) in compoListWillRender"
           :key="item.id"
           :data-index="index"
@@ -44,16 +57,22 @@
   </div>
 </template>
 <script setup>
-import { inject } from 'vue';
+import { inject, reactive } from 'vue';
 import originComList from './c-components/index.js'; //  所有c-组件
 import propEditor from './propEditor.vue';
-import { NIcon, NTooltip, NScrollbar } from 'naive-ui';
+import { NIcon, NTooltip, NScrollbar, NWatermark } from 'naive-ui';
 import { DeleteFilled } from '@vicons/material';
 import useDragActions from '@/effects/useDragActions';
 import useSelectedComAction from '@/effects/useSelectedComAction';
 
+const waterMark = reactive({
+  show: true,
+  content: '简易低代码平台demo'
+}); // 水印配置
+
 // 注入组件列表数据
 const compoListWillRender = inject('compoListWillRender');
+const isProd = inject('isProd');
 
 const { toggleDragClass, putDragElement } = useDragActions();
 const { alterSelectedCom, handleSelectedClass } = useSelectedComAction();
@@ -139,6 +158,9 @@ function removeCompo(index) {
       }
     }
   }
+  :deep(.n-scrollbar-content) {
+    padding-bottom: 100px;
+  }
 }
 
 .prop-editor-wrapper {
@@ -150,16 +172,29 @@ function removeCompo(index) {
 <style lang="scss">
 .__drag-wrapper--on-stage,
 .__drag-wrapper--of-container {
-  border: 1px dotted rgba(0, 0, 0, 0.3);
   box-sizing: border-box;
+  &.--development-mode {
+    border: 1px dotted rgba(0, 0, 0, 0.3);
+  }
+  &.--prodction-mode {
+    border: none;
+  }
 }
 .__drag-active {
   box-shadow: inset 2px 2px rgb(215, 37, 37), inset -2px -2px rgb(215, 37, 37);
 }
 .__drag-select {
-  box-shadow: inset 2px 2px rgb(77, 77, 231), inset -2px -2px rgb(77, 77, 231);
-  .--actions {
-    display: flex !important;
+  &.--development-mode {
+    box-shadow: inset 2px 2px rgb(77, 77, 231), inset -2px -2px rgb(77, 77, 231);
+    .--actions {
+      display: flex !important;
+    }
+  }
+  &.--prodction-mode {
+    box-shadow: none;
+    .--actions {
+      display: none !important;
+    }
   }
 }
 </style>
