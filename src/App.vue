@@ -1,6 +1,6 @@
 <template>
   <!-- 主布局 -->
-  <div class="main-wrapper">
+  <div class="main-wrapper font-harmony">
     <div class="top">
       <n-button type="error" @click="clearStageSnap(true)" class="btn-features"> 删除所有组件并清空缓存 </n-button>
       <n-button type="warning" @click="clearStageSnap()" class="btn-features"> 删除所有组件 </n-button>
@@ -25,7 +25,7 @@ import compoBox from './components/compoBox.vue'; // 左侧组件盒子
 import mainStage from './components/mainStage.vue'; // 右侧主舞台
 import { useLSWatcher } from 'next-vue-storage-watcher';
 import useStoreComActions from '@/effects/useStoreComActions';
-import domtoimage from 'dom-to-image';
+import domtoimage from './static/dom-to-image';
 
 const ls = useLSWatcher();
 
@@ -75,12 +75,13 @@ function generatePDF() {
     const el = document.querySelector('.n-scrollbar-content');
     domtoimage
       .toJpeg(el, {
-        quality: 0.95,
         bgcolor: '#fff',
+        scale: 1.5,
         cacheBust: true,
         filter: el => {
           if (el.classList && el.classList.contains('n-tag')) {
-            el.style.setProperty('--n-border', ''); // 去掉框架里带的border
+            // 去掉框架里带的border
+            el.style.setProperty('--n-border', '');
           }
           if (el.classList && el.classList.contains('__tag-content--title')) {
             const width = getComputedStyle(el).width;
@@ -138,4 +139,7 @@ onMounted(() => {
     }
   }
 }
+</style>
+<style>
+@import './static/main.css';
 </style>

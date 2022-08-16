@@ -1,0 +1,9 @@
+@font-face {
+  font-family: 'HarmonySC-lite';
+  src: url('../assets/HarmonySC.ttf');
+}
+
+.font-harmony {
+  font-family: HarmonySC-lite, PingFang SC, Microsoft YaHei, Hiragino Sans GB, Source Han Sans SC, Noto Sans CJK SC,
+    'sans-serif';
+}
