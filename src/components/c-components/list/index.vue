@@ -77,7 +77,7 @@ function renderTag(tag, index) {
           ></NInput>
         ) : (
           <Fragment>
-            <span>{tag}</span>
+            <span class={['__tag-content', isTitle ? '__tag-content--title' : ''].join(' ')}>{tag}</span>
             <NIcon
               class="--editable-icon"
               style="margin-left: 1.25em; cursor: pointer; font-weight: normal;"
@@ -153,6 +153,12 @@ onUnmounted(() => {
     font-weight: bold;
     font-size: 18px;
     line-height: 1.5em;
+    .__tag-content {
+      white-space: nowrap;
+      overflow: hidden;
+      max-width: 600px;
+      text-overflow: ellipsis;
+    }
   }
   .paragraph {
     text-indent: calc(18px * 1.5 + 2px);

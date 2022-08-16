@@ -25,7 +25,7 @@ import compoBox from './components/compoBox.vue'; // 左侧组件盒子
 import mainStage from './components/mainStage.vue'; // 右侧主舞台
 import { useLSWatcher } from 'next-vue-storage-watcher';
 import useStoreComActions from '@/effects/useStoreComActions';
-import html2pdf from 'html2pdf.js';
+import domtoimage from 'dom-to-image';
 
 const ls = useLSWatcher();
 
@@ -73,10 +73,28 @@ function generatePDF() {
   isProd.value = true;
   nextTick().then(() => {
     const el = document.querySelector('.n-scrollbar-content');
-    const worker = html2pdf().from(el).save();
-    worker
-      .then(() => {})
-      .catch(e => {})
+    domtoimage
+      .toJpeg(el, {
+        quality: 0.95,
+        bgcolor: '#fff',
+        cacheBust: true,
+        filter: el => {
+          if (el.classList && el.classList.contains('n-tag')) {
+            el.style.setProperty('--n-border', ''); // 去掉框架里带的border
+          }
+          if (el.classList && el.classList.contains('__tag-content--title')) {
+            const width = getComputedStyle(el).width;
+            el.style.setProperty('width', `${+width.slice(0, -2) + 20}px`);
+          }
+          return true;
+        }
+      })
+      .then(dataUrl => {
+        const link = document.createElement('a');
+        link.download = 'test.jpeg';
+        link.href = dataUrl;
+        link.click();
+      })
       .finally(() => {
         isProd.value = false;
       });
