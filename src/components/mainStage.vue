@@ -131,6 +131,7 @@ function removeCompo(index) {
   flex: 1;
   .__drag-wrapper--on-stage {
     position: relative;
+    padding: 0 8px;
     .--actions {
       position: absolute;
       top: 0;

@@ -145,6 +145,7 @@ onUnmounted(() => {
   white-space: normal;
   height: auto;
   line-height: 1.5em;
+  padding: 0 12px;
   .header,
   .paragraph {
     display: flex;

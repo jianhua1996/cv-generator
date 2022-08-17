@@ -38,5 +38,8 @@ onUnmounted(() => {
 
 <style lang="scss" scoped>
 .paragraph {
+  > p {
+    padding: 0 0.75em;
+  }
 }
 </style>

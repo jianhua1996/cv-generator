@@ -60,6 +60,9 @@
               <template v-else-if="item.type === 'imageUploader'">
                 <imageUploader v-model:files="compoStates[`${item.colName}`]" />
               </template>
+              <template v-else-if="item.type === 'dynamicInput'">
+                <dynamicInput v-model:dynamicVal="compoStates[`${item.colName}`]" />
+              </template>
             </div>
           </div>
         </n-scrollbar>
@@ -87,6 +90,7 @@
 import { EditNoteRound } from '@vicons/material';
 import { computed, ref } from 'vue';
 import imageUploader from './imageUploader.vue';
+import dynamicInput from './dynamicInput.vue';
 import {
   NTabs,
   NTabPane,
