@@ -19,23 +19,29 @@ export default function (options) {
   }
 
   function propertyIterator(obj, fn) {
-    // 属性迭代器，根据传入的函数fn来对obj对象的每个字段进行单独处理和浅拷贝，返回一个新对象;
-    const tmpObj = {};
+    try {
+      // 属性迭代器，根据传入的函数fn来对obj对象的每个字段进行单独处理和浅拷贝，返回一个新对象;
+      const tmpObj = {};
 
-    Object.keys(obj).forEach(propName => {
-      const targetVal = fn(obj, propName); // fn函数需要返回一个处理后的值 targetVal
-      tmpObj[propName] = targetVal; // 赋新值
-      if (propName == '__slot__') {
-        // 如果对象上有__slot__字段，说明组件是容器类型的组件，__slot__对应的值将是一个数组，需要对数组进行遍历，然后将数组内的每个对象调用propertyIterator进行递归处理
-        const slotList = tmpObj.__slot__.map(slot => {
-          const o = propertyIterator(slot, fn);
-          return o;
-        });
-        tmpObj.__slot__ = slotList;
-        // tmpObj.__slot__ = reactive(slotList);
-      }
-    });
-    return tmpObj;
+      Object.keys(obj).forEach(propName => {
+        const targetVal = fn(obj, propName); // fn函数需要返回一个处理后的值 targetVal
+        tmpObj[propName] = targetVal; // 赋新值
+        if (propName == '__slot__') {
+          // 如果对象上有__slot__字段，说明组件是容器类型的组件，__slot__对应的值将是一个数组，需要对数组进行遍历，然后将数组内的每个对象调用propertyIterator进行递归处理
+          const slotList = tmpObj.__slot__.map(slot => {
+            if (slot) {
+              const o = propertyIterator(slot, fn);
+              return o;
+            }
+          });
+          tmpObj.__slot__ = slotList;
+          // tmpObj.__slot__ = reactive(slotList);
+        }
+      });
+      return tmpObj;
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   function saveComToStore(ls, comList) {

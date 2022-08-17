@@ -16,3 +16,16 @@ export function getRandomString({ len = 12, type = 'string' }) {
   }
   return arr.join('');
 }
+
+export function file2url(file) {
+  return new Promise((resolve, reject) => {
+    if (!file instanceof File) {
+      return reject(new Error('不是file类型的文件'));
+    }
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = res => {
+      resolve(res.target.result);
+    };
+  });
+}

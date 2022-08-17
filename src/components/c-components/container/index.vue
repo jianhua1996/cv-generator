@@ -15,7 +15,7 @@
         :indexPath="`${indexPath}-${index}`"
         @click.capture="alterSelectedCom(selfData[index])"
       ></component>
-      <div v-else>拖动组件到容器内</div>
+      <div v-else-if="!isProd">拖动组件到容器内</div>
     </n-gi>
   </n-grid>
 </template>
@@ -57,4 +57,8 @@ onUnmounted(() => {
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.__drag-wrapper--of-container {
+  padding: 0.5em 0;
+}
+</style>

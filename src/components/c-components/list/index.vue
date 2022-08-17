@@ -1,7 +1,7 @@
 <template>
   <div>
     <n-dynamic-tags
-      :class="compoStates.isEditable ? 'list-com-show' : 'list-com-hide'"
+      :class="compoStates.isEditable && !isProd ? 'list-com-show' : 'list-com-hide'"
       v-model:value="tags"
       :input-props="inputProps"
       input-style="line-height: 1.5em;"
@@ -12,7 +12,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, computed, Fragment, onBeforeMount, onMounted, onUnmounted, watch } from 'vue';
+import { ref, reactive, computed, Fragment, onBeforeMount, onMounted, onUnmounted, watch, inject } from 'vue';
 import { NDynamicTags, NTag, NIcon, NInput } from 'naive-ui';
 import { FilterVintageOutlined, EmergencyOutlined, GradeRound, HiveTwotone, EditFilled } from '@vicons/material';
 import useLifecycleHook from '@/effects/useLifecycleHook';
@@ -22,6 +22,7 @@ const props = defineProps({
   compoActions: {}
 });
 
+const isProd = inject('isProd');
 const tags = ref([]);
 
 const inputProps = reactive({

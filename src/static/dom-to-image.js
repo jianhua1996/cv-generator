@@ -106,7 +106,11 @@
   function toJpeg(node, options) {
     options = options || {};
     return draw(node, options).then(function (canvas) {
-      return canvas.toDataURL('image/jpeg', options.quality || 1.0);
+      return {
+        dataUrl: canvas.toDataURL('image/jpeg', options.quality || 1.0),
+        width: canvas.width,
+        height: canvas.height
+      };
     });
   }
 
@@ -149,21 +153,15 @@
       var ctx = canvas.getContext('2d');
 
       let { width, height, bgcolor, scale } = options;
-
       if (bgcolor) {
         ctx.fillStyle = bgcolor;
       }
-
       scale = typeof scale === 'number' && scale > 0 ? scale : 1;
-
       width = (width || util.width(domNode)) * scale;
       height = (height || util.height(domNode)) * scale;
-
       canvas.width = width;
       canvas.height = height;
-
       ctx.scale(scale, scale);
-
       ctx.fillRect(0, 0, width, height);
       return canvas;
     }

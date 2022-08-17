@@ -26,6 +26,7 @@ import mainStage from './components/mainStage.vue'; // 右侧主舞台
 import { useLSWatcher } from 'next-vue-storage-watcher';
 import useStoreComActions from '@/effects/useStoreComActions';
 import domtoimage from './static/dom-to-image';
+import { jsPDF } from 'jspdf';
 
 const ls = useLSWatcher();
 
@@ -90,11 +91,13 @@ function generatePDF() {
           return true;
         }
       })
-      .then(dataUrl => {
-        const link = document.createElement('a');
-        link.download = 'test.jpeg';
-        link.href = dataUrl;
-        link.click();
+      .then(({ dataUrl, width, height }) => {
+        const doc = new jsPDF({ unit: 'px' });
+        const docWidth = doc.internal.pageSize.getWidth();
+        const docHeight = doc.internal.pageSize.getHeight();
+        const radio = docWidth / width;
+        doc.addImage(dataUrl, 'JPEG', 0, 0, docWidth, height * radio);
+        doc.save('test.pdf');
       })
       .finally(() => {
         isProd.value = false;
