@@ -1,6 +1,6 @@
 <template>
   <n-scrollbar style="max-height: 220px">
-    <n-dynamic-input v-model:value="selfData" :on-create="handleCreate" :on-update:value="handleChange">
+    <n-dynamic-input :value="selfData" :on-create="handleCreate" :on-update:value="handleChange">
       <template #create-button-default> 添加 </template>
       <template #default="{ value }">
         <div style="display: flex; align-items: center; width: 100%">
@@ -43,6 +43,7 @@ function handleChange(value) {
 }
 
 watchEffect(() => {
+  console.log(props.dynamicVal);
   selfData.value = props.dynamicVal;
 });
 </script>
