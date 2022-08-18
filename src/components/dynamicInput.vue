@@ -1,18 +1,27 @@
 <template>
-  <n-dynamic-input v-model:value="selfData" :on-create="handleCreate" :on-update:value="handleChange">
-    <template #create-button-default> 添加 </template>
-    <template #default="{ value }">
-      <div style="display: flex; align-items: center; width: 100%">
-        <n-input v-model:value="value.label" type="text" class="__label-input" />
-        <n-input-number v-model:value="value.value" class="__value-input" />
-      </div>
-    </template>
-  </n-dynamic-input>
+  <n-scrollbar style="max-height: 220px">
+    <n-dynamic-input v-model:value="selfData" :on-create="handleCreate" :on-update:value="handleChange">
+      <template #create-button-default> 添加 </template>
+      <template #default="{ value }">
+        <div style="display: flex; align-items: center; width: 100%">
+          <n-input v-model:value="value.label" :maxlength="15" type="text" class="__label-input" />
+          <n-input-number
+            v-model:value="value.value"
+            :min="1"
+            :max="5"
+            :step="1"
+            :precision="0"
+            class="__value-input"
+          />
+        </div>
+      </template>
+    </n-dynamic-input>
+  </n-scrollbar>
 </template>
 
 <script setup>
 import { ref, watchEffect } from 'vue';
-import { NDynamicInput, NInput, NInputNumber } from 'naive-ui';
+import { NDynamicInput, NInput, NInputNumber, NScrollbar } from 'naive-ui';
 
 const props = defineProps({
   dynamicVal: {}

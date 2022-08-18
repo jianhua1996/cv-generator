@@ -10,13 +10,25 @@ export default {
         label: '学习能力',
         value: 5
       }
-    ]
+    ],
+    fontColor: '#000000FF',
+    iconColor: '#D3671FFF'
   },
   defineStates: markRaw([
     {
       label: '评价项',
       colName: 'rateList',
       type: 'dynamicInput'
+    },
+    {
+      label: '字体颜色',
+      colName: 'fontColor',
+      type: 'colorPicker'
+    },
+    {
+      label: '图标颜色',
+      colName: 'iconColor',
+      type: 'colorPicker'
     }
   ]),
   compoActions: {},
