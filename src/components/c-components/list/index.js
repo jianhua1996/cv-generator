@@ -7,7 +7,7 @@ export default {
   compoStates: {
     listStyle: 'type2',
     listColor: '#7428CCFF',
-    listData: ['这是标题', '这是一段正文这是一段正文这是一段正文这是一段正文这是一段正文'],
+    listData: [{ content: '这是标题' }, { content: '这是一段正文这是一段正文这是一段正文这是一段正文这是一段正文' }],
     isEditable: true
   },
   defineStates: markRaw([

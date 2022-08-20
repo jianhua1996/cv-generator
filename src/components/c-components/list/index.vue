@@ -1,20 +1,58 @@
 <template>
-  <div>
-    <n-dynamic-tags
-      :class="compoStates.isEditable && !isProd ? 'list-com-show' : 'list-com-hide'"
-      v-model:value="tags"
-      :input-props="inputProps"
-      input-style="line-height: 1.5em;"
-      :render-tag="renderTag"
-    >
-    </n-dynamic-tags>
+  <div class="">
+    <div class="list-item-wrapper" v-for="(item, index) in listData">
+      <div :class="['tag-content', isTitle(index) ? '--title' : '--content']">
+        <n-icon :color="compoStates.listColor" style="margin-right: 1em" v-if="isTitle(index)">
+          <component :is="renderIcon" />
+        </n-icon>
+        <n-input
+          v-if="showEdit(index)"
+          type="textarea"
+          :autosize="{ minRows: 1 }"
+          placeholder=""
+          v-model:value="item.content"
+          @keydown.enter.prevent="handleEditFinish"
+          @blur="handleEditFinish"
+        >
+        </n-input>
+        <span v-else class="tag">{{ item.content }}</span>
+      </div>
+      <n-icon
+        v-if="!showEdit(index) && !isProd"
+        style="cursor: pointer; width: 1em; margin-left: 1.5em"
+        @click="handleEdit(index)"
+      >
+        <EditFilled />
+      </n-icon>
+    </div>
+    <div class="add-part">
+      <n-input
+        v-if="showAdd()"
+        type="textarea"
+        :autosize="{ minRows: 1, maxRows: 3 }"
+        placeholder=""
+        @keydown.enter.prevent="handleAddFinish"
+        @blur="handleAddFinish"
+      >
+      </n-input>
+      <n-icon v-if="!showAdd() && !isProd" size="22" style="cursor: pointer" @click="handleAdd">
+        <AddCircleOutlineTwotone />
+      </n-icon>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, computed, Fragment, onBeforeMount, onMounted, onUnmounted, watch, inject } from 'vue';
-import { NDynamicTags, NTag, NIcon, NInput } from 'naive-ui';
-import { FilterVintageOutlined, EmergencyOutlined, GradeRound, HiveTwotone, EditFilled } from '@vicons/material';
+import { ref, onBeforeMount, onMounted, onUnmounted, inject } from 'vue';
+import { NIcon, NInput } from 'naive-ui';
+import {
+  FilterVintageOutlined,
+  EmergencyOutlined,
+  GradeRound,
+  HiveTwotone,
+  EditFilled,
+  AddCircleOutlineTwotone
+} from '@vicons/material';
 import useLifecycleHook from '@/effects/useLifecycleHook';
 
 const props = defineProps({
@@ -23,79 +61,50 @@ const props = defineProps({
 });
 
 const isProd = inject('isProd');
-const tags = ref([]);
 
-const inputProps = reactive({
-  type: 'textarea',
-  autosize: {
-    minRows: 1,
-    maxRows: 3
-  }
-});
+const listData = ref([]);
+const currentItem = ref(null);
+const addAction = ref(null);
 
-const currentIndex = ref(null);
-
-const handleEdit = index => {
-  currentIndex.value = index;
+const isTitle = index => {
+  return index % 2 === 0;
 };
 
-const formattedText = computed(() => {
-  return tags.value[currentIndex.value].trim();
-});
-
-const handleEditFinish = e => {
-  // console.log(e);
-  const { type, target, keyCode } = e;
-
-  if ((type === 'keydown' && keyCode === 13) || type === 'blur') {
-    console.log(currentIndex.value);
-    tags.value[currentIndex.value] = target.value;
-    currentIndex.value = null;
-    return false;
-  }
+const showEdit = index => {
+  return currentItem.value === index;
 };
 
-function renderTag(tag, index) {
-  const isTitle = index % 2 === 0;
-  return (
-    <NTag>
-      <div class={isTitle ? 'header' : 'paragraph'}>
-        {isTitle && (
-          <NIcon style="margin-right: 0.5em;" color={props.compoStates.listColor}>
-            {renderIcon()}
-          </NIcon>
-        )}
-        {index === currentIndex.value ? (
-          <NInput
-            defaultValue={formattedText.value}
-            type="textarea"
-            placeholder=""
-            autosize={{
-              minRows: 1
-            }}
-            onKeydown={handleEditFinish}
-            onBlur={handleEditFinish}
-          ></NInput>
-        ) : (
-          <Fragment>
-            <span class={['__tag-content', isTitle ? '__tag-content--title' : ''].join(' ')}>{tag}</span>
-            <NIcon
-              class="--editable-icon"
-              style="margin-left: 1.25em; cursor: pointer; font-weight: normal;"
-              size="16"
-              onClick={handleEdit.bind(null, index)}
-            >
-              <EditFilled style="position: absolute; right: 0;" />
-            </NIcon>
-          </Fragment>
-        )}
-      </div>
-    </NTag>
-  );
+const showAdd = () => {
+  return addAction.value;
+};
+
+function handleEdit(index) {
+  currentItem.value = index;
+}
+
+function handleEditFinish(evt) {
+  console.log(evt.target.value);
+  currentItem.value = null;
+}
+
+function handleAdd() {
+  addAction.value = true;
+}
+
+function handleAddFinish(evt) {
+  const { target } = evt;
+  if (addAction.value) {
+    console.log(target.value);
+    listData.value.push({
+      content: target.value
+    });
+    addAction.value = null;
+  }
 }
 
 function renderIcon() {
-  switch (props.compoStates.listStyle) {
+  const type = props.compoStates.listStyle;
+  switch (type) {
     case 'type1':
       return <FilterVintageOutlined />;
     case 'type2':
@@ -110,15 +119,7 @@ function renderIcon() {
 const { useOnBeforeMount, useOnMounted, useOnUnmounted } = useLifecycleHook(props.compoActions);
 
 onBeforeMount(() => {
-  // debugger;
-  tags.value = props.compoStates.listData;
-  watch(
-    tags,
-    () => {
-      props.compoStates.listData = tags.value;
-    },
-    { deep: true }
-  );
+  listData.value = props.compoStates.listData;
   useOnBeforeMount();
 });
 onMounted(() => {
@@ -130,59 +131,51 @@ onUnmounted(() => {
 </script>
 
 <style lang="scss" scoped>
-:deep(.n-dynamic-tags) {
-  flex-direction: column !important;
-  &.list-com-hide {
-    .n-button,
-    .--editable-icon {
-      display: none;
+.list-item-wrapper,
+.tag-content {
+  display: flex;
+  align-items: center;
+}
+.list-item-wrapper,
+.add-part {
+  :deep(.n-input-wrapper) {
+    padding: 0;
+    .n-input__textarea-el,
+    .n-input__textarea-mirror {
+      padding: 0 0.5em;
+      box-sizing: content-box;
+      font-size: 16px;
+    }
+    .n-input__textarea-el {
+      left: 0;
+      right: 0;
+      word-break: break-all;
     }
   }
 }
-:deep(.n-tag) {
-  background-color: transparent;
+.tag-content {
   word-break: break-all;
-  white-space: normal;
-  height: auto;
-  line-height: 1.5em;
-  padding: 0 12px;
-  .header,
-  .paragraph {
-    display: flex;
-    align-items: center;
-  }
-  .header {
-    font-weight: bold;
+  &.--title {
     font-size: 18px;
-    line-height: 1.5em;
-    .__tag-content {
-      white-space: nowrap;
-      overflow: hidden;
-      max-width: 600px;
-      text-overflow: ellipsis;
+    font-weight: bold;
+    .tag {
+      &::after {
+        content: '';
+        display: inline-block;
+        width: 1em;
+      }
     }
   }
-  .paragraph {
-    text-indent: calc(18px * 1.5 + 2px);
-  }
-
-  .n-input-wrapper {
-    padding: 0;
-  }
-  .n-input__textarea {
-    min-width: 80px;
-  }
-  .n-input__textarea-el,
-  .n-input__textarea-mirror,
-  .n-input__placeholder {
-    padding: 0;
-    left: 0;
+  &.--content {
+    font-size: 16px;
     line-height: 1.5em;
+    text-indent: 36px;
   }
-  .header {
-    .n-input__textarea {
-      font-size: 18px;
-    }
-  }
+}
+.add-part {
+  height: 30px;
+  line-height: 30px;
+  display: flex;
+  align-items: center;
 }
 </style>
