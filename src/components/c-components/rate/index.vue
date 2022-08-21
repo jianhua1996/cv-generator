@@ -1,8 +1,10 @@
 <template>
   <div class="rate-container">
     <div class="rate-item-wrapper" :style="customStyle" v-for="(item, index) in compoStates.rateList" :key="index">
-      <span style="margin: 0 1em 0 0.5em; font-weight: bold">{{ item.label }}</span>
-      <n-rate v-model:value="item.value" :color="compoStates.iconColor">
+      <span :style="{ margin: '0 1em 0 0.5em', fontWeight: 'bold', ...customStyle }">
+        {{ item.title }}
+      </span>
+      <n-rate v-model:value="item.rate" :color="compoStates.iconColor">
         <n-icon>
           <EmojiObjectsRound />
         </n-icon>
@@ -12,7 +14,7 @@
 </template>
 
 <script setup>
-import { computed, watch } from 'vue';
+import { computed, reactive, isReadonly, onBeforeMount } from 'vue';
 import { NRate, NIcon } from 'naive-ui';
 import { EmojiObjectsRound } from '@vicons/material';
 
@@ -26,6 +28,17 @@ const customStyle = computed(() => {
     color: props.compoStates.fontColor,
     borderColor: props.compoStates.fontColor
   };
+});
+
+onBeforeMount(() => {
+  // debugger;
+  if (isReadonly(props.compoStates.rateList)) {
+    props.compoStates.rateList = props.compoStates.rateList.map(item => {
+      return {
+        ...item
+      };
+    });
+  }
 });
 </script>
 

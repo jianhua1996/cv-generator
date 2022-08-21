@@ -7,8 +7,8 @@ export default {
   compoStates: {
     rateList: [
       {
-        label: '学习能力',
-        value: 5
+        title: '学习能力',
+        rate: 5
       }
     ],
     fontColor: '#000000FF',
