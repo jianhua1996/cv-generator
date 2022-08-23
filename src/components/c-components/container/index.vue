@@ -1,10 +1,14 @@
 <template>
-  <n-grid :x-gap="compoStates.xGap || 0" :cols="compoStates.colsCount">
-    <n-gi
+  <div style="display: flex; flex-wrap: wrap">
+    <div
       :class="['__drag-wrapper--of-container', isProd ? '--prodction-mode' : '--development-mode']"
       v-for="(item, index) in Array(compoStates.colsCount)"
       :data-index-path="indexPath"
       :data-index="index"
+      :style="{
+        width: resolveWidth(index),
+        marginLeft: index === 0 ? '' : `${singleGap}px`
+      }"
     >
       <component
         v-if="selfData[index]"
@@ -16,14 +20,13 @@
         @click.capture="alterSelectedCom(selfData[index])"
       ></component>
       <div v-else-if="!isProd">拖动组件到容器内</div>
-    </n-gi>
-  </n-grid>
+    </div>
+  </div>
 </template>
 
 <script setup>
-import { NGrid, NGi } from 'naive-ui';
 import useSelectedComAction from '@/effects/useSelectedComAction';
-import { ref, watchEffect, onBeforeMount, onMounted, onUnmounted, inject } from 'vue';
+import { ref, watchEffect, onBeforeMount, onMounted, onUnmounted, inject, computed, isReadonly } from 'vue';
 import useLifecycleHook from '@/effects/useLifecycleHook';
 
 const props = defineProps({
@@ -42,11 +45,24 @@ watchEffect(() => {
   }
 });
 
+const singleGap = computed(() => {
+  return props.compoStates.xGap || 0;
+});
+
+const resolveWidth = index => {
+  const gap = (props.compoStates.colsCount - 1) * singleGap.value;
+  const itemSpan = props.compoStates.spanList[index] || 24 / props.compoStates.colsCount;
+  return `calc((100% - ${gap}px) / 24 * ${itemSpan})`;
+};
+
 const { alterSelectedCom } = useSelectedComAction();
 
 const { useOnBeforeMount, useOnMounted, useOnUnmounted } = useLifecycleHook(props.compoActions);
 
 onBeforeMount(() => {
+  if (isReadonly(props.compoStates.spanList)) {
+    props.compoStates.spanList = props.compoStates.spanList.map(item => item);
+  }
   useOnBeforeMount();
 });
 onMounted(() => {

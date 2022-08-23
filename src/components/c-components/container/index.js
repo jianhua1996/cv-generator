@@ -6,15 +6,16 @@ export default {
   compo: markRaw(Compo),
   compoStates: {
     xGap: 0,
-    colsCount: 2
+    colsCount: 2,
+    spanList: []
   },
   defineStates: markRaw([
     {
       label: '组件列数',
       colName: 'colsCount',
-      type: 'select',
+      type: 'radioButton',
       prop: {
-        options: [
+        selections: [
           {
             label: '一列',
             value: 1
@@ -27,7 +28,9 @@ export default {
             label: '三列',
             value: 3
           }
-        ]
+        ],
+        groupName: '组件列数',
+        spanList: 'spanList'
       }
     },
     {

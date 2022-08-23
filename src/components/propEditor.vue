@@ -57,6 +57,14 @@
               <template v-else-if="item.type === 'colorPicker'">
                 <n-color-picker v-model:value="compoStates[`${item.colName}`]" :modes="['hex']" :show-preview="true" />
               </template>
+              <template v-else-if="item.type === 'radioButton'">
+                <radioButtonGroup
+                  v-model:value="compoStates[`${item.colName}`]"
+                  :name="item.prop.groupName"
+                  :selections="item.prop.selections"
+                  :spanList="compoStates[`${item.prop.spanList}`]"
+                />
+              </template>
               <template v-else-if="item.type === 'imageUploader'">
                 <imageUploader v-model:files="compoStates[`${item.colName}`]" />
               </template>
@@ -91,6 +99,7 @@ import { EditNoteRound } from '@vicons/material';
 import { computed, ref } from 'vue';
 import imageUploader from './imageUploader.vue';
 import dynamicInput from './dynamicInput.vue';
+import radioButtonGroup from './radioButtonGroup.vue';
 import {
   NTabs,
   NTabPane,
