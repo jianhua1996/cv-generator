@@ -172,7 +172,8 @@ function removeCompo(index) {
 </style>
 <style lang="scss">
 .__drag-wrapper--on-stage,
-.__drag-wrapper--of-container {
+.__drag-wrapper--of-container,
+.__drag-wrapper--of-container-row {
   box-sizing: border-box;
   &.--development-mode {
     border: 1px dotted rgba(0, 0, 0, 0.3);

@@ -19,7 +19,7 @@
         :indexPath="`${indexPath}-${index}`"
         @click.capture="alterSelectedCom(selfData[index])"
       ></component>
-      <div v-else-if="!isProd">拖动组件到容器内</div>
+      <div v-else-if="!isProd">拖拽到多列容器内</div>
     </div>
   </div>
 </template>
