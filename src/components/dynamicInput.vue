@@ -34,13 +34,16 @@
 </template>
 
 <script setup>
-import { ref, onBeforeMount } from 'vue';
+import { ref, onBeforeMount, watchEffect, watch } from 'vue';
 import { NInput, NInputNumber, NScrollbar, NButton, NIcon } from 'naive-ui';
 import { AddFilled, MinusFilled } from '@vicons/material';
+import diff from 'deep-diff';
 
 const props = defineProps({
   dynamicVal: {}
 });
+
+const emits = defineEmits(['update:dynamicVal']);
 
 const selfData = ref([]);
 
@@ -61,8 +64,23 @@ function addContent() {
   });
 }
 
-onBeforeMount(() => {
-  selfData.value = props.dynamicVal;
+watch(
+  selfData,
+  val => {
+    // debugger;
+    // 这里emit会触发watchEffect里观察的props.dynamicVal数据变更，为了防止循环触发，需要在watchEffect里比较一下数据是否实在改变
+    emits('update:dynamicVal', val);
+  },
+  {
+    deep: true
+  }
+);
+
+watchEffect(() => {
+  const differences = diff(selfData.value, props.dynamicVal);
+  // debugger;
+  // 因为传进来的值是一个对象数组，所以为了确保数据的独立性，我们应该浅拷贝这个数组里的每个对象
+  if (differences) selfData.value = props.dynamicVal.map(v => ({ ...v }));
 });
 </script>
 

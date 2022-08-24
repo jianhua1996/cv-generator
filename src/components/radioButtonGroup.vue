@@ -7,7 +7,7 @@
 
 <script setup>
 import { NRadioGroup, NRadioButton, NInput } from 'naive-ui';
-import { ref, onBeforeMount } from 'vue';
+import { ref, onBeforeMount, watchEffect } from 'vue';
 const props = defineProps({
   name: {},
   selections: {},
@@ -15,7 +15,7 @@ const props = defineProps({
   spanList: {}
 });
 
-const emits = defineEmits(['update:value']);
+const emits = defineEmits(['update:value', 'update:spanList']);
 
 const spaceRate = ref('');
 
@@ -28,22 +28,23 @@ function handleConfSpace(e) {
 
   if (!val) return;
   try {
-    props.spanList.length = 0; // 先清空一下数组
     const arr = val.split('-');
+    const spanList = [];
     // debugger;
     props.selections.forEach((item, index) => {
       const input = arr[index];
       if (input && parseInt(input)) {
-        props.spanList.push(input);
+        spanList.push(input);
       }
     });
+    emits('update:spanList', spanList);
   } catch (e) {
     console.error(e);
   }
 }
 
-onBeforeMount(() => {
-  if (props.spanList.length) spaceRate.value = props.spanList.join('-');
+watchEffect(() => {
+  spaceRate.value = props.spanList.length ? props.spanList.join('-') : '';
 });
 </script>
 

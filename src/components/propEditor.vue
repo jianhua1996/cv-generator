@@ -62,7 +62,7 @@
                   v-model:value="compoStates[`${item.colName}`]"
                   :name="item.prop.groupName"
                   :selections="item.prop.selections"
-                  :spanList="compoStates[`${item.prop.spanList}`]"
+                  v-model:spanList="compoStates[`${item.prop.spanList}`]"
                 />
               </template>
               <template v-else-if="item.type === 'imageUploader'">
