@@ -5,8 +5,8 @@ export default {
   name: '列表',
   compo: markRaw(Compo),
   compoStates: {
-    listStyle: 'type2',
-    listColor: '#7428CCFF',
+    listStyle: 'type3',
+    listColor: '#4D4DE7FF',
     listData: [{ content: '这是标题' }, { content: '这是一段正文这是一段正文这是一段正文这是一段正文这是一段正文' }]
   },
   defineStates: markRaw([

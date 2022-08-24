@@ -1,7 +1,12 @@
 import { reactive } from 'vue';
 import { getRandomString } from '@/utils';
 
-const dragClassList = ['__drag-wrapper--of-container', '__drag-wrapper--on-stage', 'main-stage'];
+const dragClassList = [
+  '__drag-wrapper--of-container-row',
+  '__drag-wrapper--of-container',
+  '__drag-wrapper--on-stage',
+  'main-stage'
+];
 
 const activeClass = '__drag-active';
 
@@ -51,19 +56,21 @@ export default function (options = {}) {
     // debugger;
     switch (deep) {
       case 0:
+      case 1:
         targetElIndexPath = targetEl.dataset.indexPath.split('-');
         putInCompo();
         break;
-      case 1:
+      case 2:
         putOnStageWrapper();
         break;
-      case 2:
+      case 3:
         putOnMainStage();
         break;
     }
 
     // 放置到容器内的包装元素里
     function putInCompo() {
+      // debugger;
       let targetList = compoList;
       let targetCompo;
       targetElIndexPath.forEach(index => {
@@ -71,7 +78,15 @@ export default function (options = {}) {
         targetList = targetCompo.__slot__ || [];
       });
       // debugger;
-      targetList[targetElIndex] = tmpObj;
+      if (deep === 0) {
+        if (['多行布局', '多列布局'].includes(tmpObj.name)) {
+          console.warn('多行布局组件无法嵌套其他类型的容器组件');
+        } else {
+          targetList.push(tmpObj);
+        }
+      } else {
+        targetList[targetElIndex] = tmpObj;
+      }
       targetCompo.__slot__ = targetList;
     }
     // 放置到舞台上的包装元素里

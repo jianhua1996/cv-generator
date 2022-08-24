@@ -12,7 +12,7 @@ export default {
       }
     ],
     fontColor: '#000000FF',
-    iconColor: '#D3671FFF'
+    iconColor: '#E47644FF'
   },
   defineStates: markRaw([
     {
