@@ -1,5 +1,5 @@
 name: deploy-flow
-
+# test
 on:
   push:
     branches:
@@ -9,15 +9,16 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: checkout & build
+      - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Install and Build
         run: |
           npm install
           npm run build
 
-      - name: deploy
+      - name: Deploy
         uses: JamesIves/github-pages-deploy-action@v4.4.0
         with:
-          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          BRANCH: deploy
-          FOLDER: dist
+          token: ${{ secrets.ACCESS_TOKEN }}
+          folder: dist
