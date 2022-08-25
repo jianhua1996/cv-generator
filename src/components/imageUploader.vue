@@ -22,7 +22,6 @@ const props = defineProps({
 const emits = defineEmits(['update:files']);
 
 async function handleChange(data) {
-  // debugger;
   const promiseList = data.fileList.map(item => {
     return new Promise((resolve, reject) => {
       file2url(item.file)

@@ -36,7 +36,6 @@ export default function (options = {}) {
     // 移除active效果
     deactivatedDragClass(targetEl);
     // 浅拷贝一下源组件的组件数据，保证每个渲染组件的compoStates、compoActions都是独立且响应式的
-    // debugger;
     const tmpObj = {
       ...srcCompo,
       compoStates: reactive({
@@ -70,7 +69,6 @@ export default function (options = {}) {
 
     // 放置到容器内的包装元素里
     function putInCompo() {
-      // debugger;
       let targetList = compoList;
       let targetCompo;
       targetElIndexPath.forEach(index => {
@@ -80,13 +78,13 @@ export default function (options = {}) {
       // debugger;
       if (deep === 0) {
         if (['多行布局', '多列布局'].includes(tmpObj.name)) {
-          window.$message.error('多行布局组件内无法嵌套其他容器类型的组件');
+          window.$message.error('多行布局组件无法嵌套其他的容器类型组件');
         } else {
           targetList.push(tmpObj);
         }
       } else {
         if (tmpObj.name === '多列布局') {
-          window.$message.error('多列布局组件内无法嵌套多列布局组件');
+          window.$message.error('多列布局组件无法嵌套额外的多列布局组件');
         } else {
           targetList[targetElIndex] = tmpObj;
         }

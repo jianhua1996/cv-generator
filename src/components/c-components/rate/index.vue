@@ -14,7 +14,7 @@
 </template>
 
 <script setup>
-import { computed, reactive, isReadonly, onBeforeMount } from 'vue';
+import { computed, isReadonly, onBeforeMount } from 'vue';
 import { NRate, NIcon } from 'naive-ui';
 import { EmojiObjectsRound } from '@vicons/material';
 
@@ -31,7 +31,6 @@ const customStyle = computed(() => {
 });
 
 onBeforeMount(() => {
-  // debugger;
   if (isReadonly(props.compoStates.rateList)) {
     props.compoStates.rateList = props.compoStates.rateList.map(item => {
       return {

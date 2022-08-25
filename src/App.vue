@@ -26,11 +26,11 @@ import { ref, provide, onMounted, nextTick } from 'vue';
 import { NButton, NMessageProvider } from 'naive-ui'; // 水印
 import compoBox from './components/compoBox.vue'; // 左侧组件盒子
 import mainStage from './components/mainStage.vue'; // 右侧主舞台
+import messageContent from './components/messageContent.vue';
 import { useLSWatcher } from 'next-vue-storage-watcher';
-import useStoreComActions from '@/effects/useStoreComActions';
 import domtoimage from './static/dom-to-image';
 import { jsPDF } from 'jspdf';
-import messageContent from './components/messageContent.vue';
+import useStoreComActions from '@/effects/useStoreComActions';
 
 const ls = useLSWatcher();
 
@@ -76,27 +76,23 @@ function generatePDF() {
   isProd.value = true;
   nextTick().then(() => {
     const el = document.querySelector('.n-scrollbar-content');
-    domtoimage
-      .toJpeg(el, {
-        bgcolor: '#fff',
-        scale: 1.5,
-        cacheBust: true,
-        filter: el => {
-          if (el.classList && el.classList.contains('n-tag')) {
-            // 去掉框架里带的border
-            el.style.setProperty('--n-border', '');
-          }
-          if (el.classList && el.classList.contains('__tag-content--title')) {
-            const width = getComputedStyle(el).width;
-            el.style.setProperty('width', `${+width.slice(0, -2) + 20}px`);
-          }
-          return true;
+    const conf = {
+      bgcolor: '#fff',
+      scale: 1.5,
+      cacheBust: true,
+      filter: el => {
+        if (el.classList && el.classList.contains('n-tag')) {
+          // 去掉框架里带的border
+          el.style.setProperty('--n-border', '');
         }
-      })
+        return true;
+      }
+    };
+    domtoimage
+      .toJpeg(el, conf)
       .then(({ dataUrl, width, height }) => {
         const doc = new jsPDF({ unit: 'px' });
         const docWidth = doc.internal.pageSize.getWidth();
-        const docHeight = doc.internal.pageSize.getHeight();
         const radio = docWidth / width;
         doc.addImage(dataUrl, 'JPEG', 0, 0, docWidth, height * radio);
         doc.save('test.pdf');

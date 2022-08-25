@@ -30,7 +30,6 @@ function handleConfSpace(e) {
   try {
     const arr = val.split('-');
     const spanList = [];
-    // debugger;
     props.selections.forEach((item, index) => {
       const input = arr[index];
       if (input && parseInt(input)) {

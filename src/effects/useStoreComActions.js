@@ -35,7 +35,6 @@ export default function (options) {
             }
           });
           tmpObj.__slot__ = slotList;
-          // tmpObj.__slot__ = reactive(slotList);
         }
       });
       return tmpObj;
@@ -69,7 +68,8 @@ export default function (options) {
       try {
         const compoDataSnap = ls.getItem('compo_data');
         if (!compoDataSnap.value) {
-          return console.warn('未读取到compo_data缓存');
+          reject(console.warn('未读取到compo_data缓存'));
+          return;
         }
         const comList = compoDataSnap.value.map(comObj => {
           // debugger;

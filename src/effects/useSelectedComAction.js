@@ -10,14 +10,12 @@ export default function (options = {}) {
   // 保存当前选中的组件对象
   function alterSelectedCom(item) {
     if (!item) return;
-    // debugger;
     globalProperties.selectedCom.value = item;
   }
 
   // 在主舞台内进行点击时，给当前点击的元素添加点击样式
   function handleSelectedClass(e) {
     const { targetEl } = findTargetEl(e.path);
-    // debugger;
 
     // 如果是容器本身，则不进行操作
     if (targetEl.classList.contains('main-stage')) return;

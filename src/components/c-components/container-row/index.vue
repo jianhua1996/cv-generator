@@ -47,7 +47,6 @@ const isProd = inject('isProd');
 const rowsCompo = ref([{}]);
 
 watchEffect(() => {
-  // debugger;
   if (props.__slot__) {
     rowsCompo.value = props.__slot__.length ? [...props.__slot__] : [{}];
   }

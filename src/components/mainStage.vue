@@ -27,7 +27,6 @@
           :key="item.id"
           :data-index="index"
         >
-          <!-- 当渲染的组件是容器组件时，才需要__slot__和parentIndex这两个字段。 -->
           <component
             :is="item.compo"
             :compoStates="item.compoStates"
@@ -58,10 +57,10 @@
 </template>
 <script setup>
 import { inject, reactive } from 'vue';
-import originComList from './c-components/index.js'; //  所有c-组件
-import propEditor from './propEditor.vue';
 import { NIcon, NTooltip, NScrollbar, NWatermark } from 'naive-ui';
 import { DeleteFilled } from '@vicons/material';
+import propEditor from './propEditor.vue';
+import originComList from './c-components/index.js'; //  所有c-组件
 import useDragActions from '@/effects/useDragActions';
 import useSelectedComAction from '@/effects/useSelectedComAction';
 
