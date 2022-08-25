@@ -3,8 +3,7 @@
     <div
       :class="['__drag-wrapper--of-container-row', isProd ? '--prodction-mode' : '--development-mode']"
       v-for="(item, index) in rowsCompo"
-      :data-index-path="indexPath"
-      :data-index="index"
+      :data-index-path="`${indexPath}-${index}`"
     >
       <template v-if="item.compo">
         <component

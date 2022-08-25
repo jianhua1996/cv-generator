@@ -29,6 +29,16 @@ export function findTargetEl(ePath, classList = dragClassList) {
   }
 }
 
+export function resolveElIndexPath(indexPathList, targetList) {
+  if (!indexPathList.length) return;
+  let targetCompo;
+  indexPathList.forEach(index => {
+    targetCompo = targetList[index];
+    targetList = targetCompo.__slot__ || [];
+  });
+  return [targetList, targetCompo];
+}
+
 export default function (options = {}) {
   function putDragElement(e, srcCompo, compoList) {
     // deep是classList的索引值，用来区分目标元素的类型
@@ -46,17 +56,19 @@ export default function (options = {}) {
     // 给组件初始化一个id
     tmpObj.id = getRandomString({ type: 'mixed' });
 
-    //  targetElIndexPath只有第一种元素有
-    let targetElIndexPath;
-    // targetElIndex 前两种元素有，当类型为第一种时，表示当前元素在slot列表中的index、当类型为第二种时，表示当前元素在组件列表中的index
-    let targetElIndex = +targetEl.dataset.index;
+    // targetElIndexPath 和 targetElIndex 两个变量主要用于标记元素在深层次嵌套中的位置，targetElIndex是元素在当前容器中的索引，targetElIndexPath是容器在容器中的索引
+    let targetElIndexPath, targetElIndex;
+
+    if (targetEl.dataset.indexPath) {
+      const indexPathList = targetEl.dataset.indexPath.split('-');
+      targetElIndex = indexPathList.pop();
+      targetElIndexPath = indexPathList;
+    }
 
     // 区分目标类型进行放置
-    // debugger;
     switch (deep) {
       case 0:
       case 1:
-        targetElIndexPath = targetEl.dataset.indexPath.split('-');
         putInCompo();
         break;
       case 2:
@@ -69,13 +81,8 @@ export default function (options = {}) {
 
     // 放置到容器内的包装元素里
     function putInCompo() {
-      let targetList = compoList;
-      let targetCompo;
-      targetElIndexPath.forEach(index => {
-        targetCompo = targetList[index];
-        targetList = targetCompo.__slot__ || [];
-      });
-      // debugger;
+      const [targetList, targetCompo] = resolveElIndexPath(targetElIndexPath, compoList);
+
       if (deep === 0) {
         if (['多行布局', '多列布局'].includes(tmpObj.name)) {
           window.$message.error('多行布局组件无法嵌套其他的容器类型组件');
@@ -95,7 +102,7 @@ export default function (options = {}) {
     function putOnStageWrapper() {
       // 判断鼠标在目标元素偏上还是偏下的位置，如果偏下，放置在当前目标元素的后面位置
       if (e.offsetY * 2 > targetEl.offsetHeight) {
-        targetElIndex += 1;
+        targetElIndex = +targetElIndex + 1;
       }
       compoList.splice(targetElIndex, 0, tmpObj);
     }

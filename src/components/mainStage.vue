@@ -25,7 +25,7 @@
           :class="['__drag-wrapper--on-stage', isProd ? '--prodction-mode' : '--development-mode']"
           v-for="(item, index) in compoListWillRender"
           :key="item.id"
-          :data-index="index"
+          :data-index-path="index"
         >
           <component
             :is="item.compo"

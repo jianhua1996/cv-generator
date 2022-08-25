@@ -3,8 +3,7 @@
     <div
       :class="['__drag-wrapper--of-container', isProd ? '--prodction-mode' : '--development-mode']"
       v-for="(item, index) in Array(compoStates.colsCount)"
-      :data-index-path="indexPath"
-      :data-index="index"
+      :data-index-path="`${indexPath}-${index}`"
       :style="{
         width: resolveWidth(index),
         marginLeft: index === 0 ? '' : `${singleGap}px`

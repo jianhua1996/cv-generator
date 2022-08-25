@@ -72,7 +72,6 @@ export default function (options) {
           return;
         }
         const comList = compoDataSnap.value.map(comObj => {
-          // debugger;
           const comObjCopy = propertyIterator(comObj, function (o, prop) {
             // 从源组件中加载compo、defineStates、defineActions这三个字段
             if (['compo', 'defineStates', 'defineActions'].includes(prop)) {
