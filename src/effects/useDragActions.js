@@ -80,12 +80,16 @@ export default function (options = {}) {
       // debugger;
       if (deep === 0) {
         if (['多行布局', '多列布局'].includes(tmpObj.name)) {
-          console.warn('多行布局组件无法嵌套其他类型的容器组件');
+          window.$message.error('多行布局组件内无法嵌套其他容器类型的组件');
         } else {
           targetList.push(tmpObj);
         }
       } else {
-        targetList[targetElIndex] = tmpObj;
+        if (tmpObj.name === '多列布局') {
+          window.$message.error('多列布局组件内无法嵌套多列布局组件');
+        } else {
+          targetList[targetElIndex] = tmpObj;
+        }
       }
       targetCompo.__slot__ = targetList;
     }

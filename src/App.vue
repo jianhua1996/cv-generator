@@ -16,17 +16,21 @@
       </div>
     </div>
   </div>
+  <n-message-provider>
+    <messageContent />
+  </n-message-provider>
 </template>
 
 <script setup>
 import { ref, provide, onMounted, nextTick } from 'vue';
-import { NButton, createDiscreteApi } from 'naive-ui'; // 水印
+import { NButton, NMessageProvider } from 'naive-ui'; // 水印
 import compoBox from './components/compoBox.vue'; // 左侧组件盒子
 import mainStage from './components/mainStage.vue'; // 右侧主舞台
 import { useLSWatcher } from 'next-vue-storage-watcher';
 import useStoreComActions from '@/effects/useStoreComActions';
 import domtoimage from './static/dom-to-image';
 import { jsPDF } from 'jspdf';
+import messageContent from './components/messageContent.vue';
 
 const ls = useLSWatcher();
 
@@ -35,17 +39,15 @@ const isProd = ref(false);
 provide('compoListWillRender', compoListWillRender);
 provide('isProd', isProd);
 
-let message;
-
 const { saveComToStore, loadComFromStore, clearStoreCom } = useStoreComActions();
 
 function saveStageSnap() {
   saveComToStore(ls, compoListWillRender.value)
     .then(() => {
-      message.success('保存成功');
+      window.$message.success('保存成功');
     })
     .catch(err => {
-      message.error('保存失败');
+      window.$message.error('保存失败');
     });
 }
 
@@ -62,10 +64,10 @@ function clearStageSnap(clearLocal = false) {
   if (clearLocal) {
     clearStoreCom(ls)
       .then(() => {
-        message.success('缓存已清空');
+        window.$message.success('缓存已清空');
       })
       .catch(err => {
-        message.error('缓存清空失败');
+        window.$message.error('缓存清空失败');
       });
   }
 }
@@ -106,7 +108,6 @@ function generatePDF() {
 }
 
 onMounted(() => {
-  message = createDiscreteApi(['message']).message; // 需要等到App.vue挂载后才能使用createDiscreteApi
   loadStageSnap();
 });
 </script>
