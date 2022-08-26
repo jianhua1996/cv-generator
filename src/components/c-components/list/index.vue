@@ -83,7 +83,6 @@ function handleEdit(index) {
 }
 
 function handleEditFinish(evt) {
-  console.log(evt.target.value);
   currentItem.value = null;
 }
 
@@ -94,7 +93,6 @@ function handleAdd() {
 function handleAddFinish(evt) {
   const { target } = evt;
   if (addAction.value) {
-    console.log(target.value);
     listData.value.push({
       content: target.value
     });

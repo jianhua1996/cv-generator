@@ -10,27 +10,43 @@ const dragClassList = [
 
 const activeClass = '__drag-active';
 
-//  在事件的触发列表中匹配传入的classList，每次匹配一个，只匹配类名
-export function findTargetEl(ePath, classList = dragClassList) {
-  let targetEl;
+//  查找符合传入classList类名列表的元素
+export function findTargetEl(ePath, options = {}) {
+  const { classList = dragClassList, findAll, filterRoot } = options;
+
+  let targetEl; // Element | Array
+  // 遍历事件的触发元素列表（冒泡的顺序）
   for (let i = 0; i < ePath.length; i++) {
-    // 循环drag事件的触发列表
+    // 遍历传入的类名列表
     for (let j = 0; j < classList.length; j++) {
-      // 按照classList从前向后的顺序，判断触发列表中是否有目标类名
+      // 判断当前元素是否包含classList中的这一类名
       if (ePath[i].classList.contains(classList[j])) {
-        // 如果有，则返回该元素
-        targetEl = ePath[i];
-        return {
-          deep: j,
-          targetEl
-        };
+        // 根据传入的查找模式，判断是否需要继续查询ePath中所有符合条件的元素
+        if (findAll) {
+          Array.isArray(targetEl) ? targetEl.push(ePath[i]) : (targetEl = [ePath[i]]);
+          break;
+        } else {
+          targetEl = ePath[i];
+          return {
+            wrapType: j,
+            targetEl
+          };
+        }
       }
     }
+    // 当查找模式为查找全部时，也只匹配到main-stage这个元素为止，不再向上匹配
+    if (ePath[i].classList.contains('main-stage')) break;
   }
+  if (filterRoot) {
+    targetEl.pop();
+  }
+  return {
+    targetEl // 此时返回的是一个数组
+  };
 }
 
 export function resolveElIndexPath(indexPathList, targetList) {
-  if (!indexPathList.length) return;
+  if (!indexPathList.length) return [];
   let targetCompo;
   indexPathList.forEach(index => {
     targetCompo = targetList[index];
@@ -41,8 +57,8 @@ export function resolveElIndexPath(indexPathList, targetList) {
 
 export default function (options = {}) {
   function putDragElement(e, srcCompo, compoList) {
-    // deep是classList的索引值，用来区分目标元素的类型
-    const { targetEl, deep } = findTargetEl(e.path);
+    // wrapType是classList的索引值，用来区分目标元素的类型
+    const { targetEl, wrapType } = findTargetEl(e.path);
     // 移除active效果
     deactivatedDragClass(targetEl);
     // 浅拷贝一下源组件的组件数据，保证每个渲染组件的compoStates、compoActions都是独立且响应式的
@@ -66,7 +82,7 @@ export default function (options = {}) {
     }
 
     // 区分目标类型进行放置
-    switch (deep) {
+    switch (wrapType) {
       case 0:
       case 1:
         putInCompo();
@@ -83,15 +99,15 @@ export default function (options = {}) {
     function putInCompo() {
       const [targetList, targetCompo] = resolveElIndexPath(targetElIndexPath, compoList);
 
-      if (deep === 0) {
+      if (wrapType === 0) {
         if (['多行布局', '多列布局'].includes(tmpObj.name)) {
-          window.$message.error('多行布局组件无法嵌套其他的容器类型组件');
+          window.$message.warning('多行布局组件无法嵌套其他容器类型的组件');
         } else {
           targetList.push(tmpObj);
         }
       } else {
         if (tmpObj.name === '多列布局') {
-          window.$message.error('多列布局组件无法嵌套额外的多列布局组件');
+          window.$message.warning('多列布局组件无法嵌套多列布局组件');
         } else {
           targetList[targetElIndex] = tmpObj;
         }

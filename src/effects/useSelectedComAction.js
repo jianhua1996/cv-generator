@@ -1,36 +1,69 @@
 import { ref, getCurrentInstance } from 'vue';
-import { findTargetEl } from './useDragActions';
+import { findTargetEl, resolveElIndexPath } from './useDragActions';
+import { getRandomString } from '@/utils';
 export default function (options = {}) {
   const { globalProperties } = getCurrentInstance().appContext.config;
   if (!globalProperties.selectedCom) {
     globalProperties.selectedCom = ref({});
   }
 
-  let lastSelectedComArr;
-  // 保存当前选中的组件对象
-  function alterSelectedCom(item) {
-    if (!item) return;
-    globalProperties.selectedCom.value = item;
+  // clickMarkNumberBefore 记录上次点击的元素（通过属性值）; targetElList 记录上次点击事件匹配到的所有相关wrap元素; targetElIndex 记录上次在wrap元素列表中进行操作的元素索引
+
+  let clickMarkNumberBefore, targetElList, targetElIndex;
+
+  function alterSelectedCom(indexPath, compoList) {
+    // debugger;
+    const [_noUse, targetCompo] = resolveElIndexPath(indexPath.split('-').slice(0, -1), compoList);
+    if (targetCompo) globalProperties.selectedCom.value = targetCompo;
   }
 
-  // 在主舞台内进行点击时，给当前点击的元素添加点击样式
-  function handleSelectedClass(e) {
-    const { targetEl } = findTargetEl(e.path);
+  function handleSelectedClass(e, compoList) {
+    const { target } = e;
+    // clickMarkNumber属性，用来标记网页中的元素，可以当作唯一值
+    let clickMarkNumber = target.getAttribute('clickMarkNumber');
+    if (!clickMarkNumber) {
+      // 如果没有添加过这个属性，则设置为16位随机数
+      clickMarkNumber = getRandomString({ len: 16, type: 'number' });
+      target.setAttribute('clickMarkNumber', clickMarkNumber);
+    }
 
-    // 如果是容器本身，则不进行操作
-    if (targetEl.classList.contains('main-stage')) return;
-    // 如果已经添加过类名，则不进行操作
-    if (targetEl.classList.contains('__drag-select')) return;
-    // 去除上一个元素的点击样式，保证容器内最多只有一个元素有点击样式
-    if (lastSelectedComArr) lastSelectedComArr.classList.remove('__drag-select');
-    // 添加class
-    targetEl.classList.add('__drag-select');
-    lastSelectedComArr = targetEl; // 记录这次的添加
+    // 判断当前的clickMarkNumber是否和上次点击过的相同
+    if (clickMarkNumber === clickMarkNumberBefore) {
+      // 相同，说明为同一元素
+      // 判断上次点击的索引是否为列表最后一个，如果是，则此次操作的索引值应重置为0，否则，将上次操作的索引加1取后面一位。
+      const index = targetElIndex === targetElList.length - 1 ? 0 : targetElIndex + 1;
+      // 移除上次的效果
+      targetElList[targetElIndex].classList.remove('__drag-select');
+      // 添加本次的效果
+      targetElList[index].classList.add('__drag-select');
+      alterSelectedCom(targetElList[index].dataset.indexPath, compoList);
+      // 将操作后的索引赋值
+      targetElIndex = index;
+    } else {
+      // 不同，说明不是同一元素
+      // 重新查询wrap元素列表
+      const elList = findTargetEl(e.path, { findAll: true, filterRoot: true }).targetEl;
+      // debugger;
+      // 重新查询后依然从第一个元素开始操作
+      const el = elList[0];
+
+      // 判断之前是否有添加过效果，如果有则移除
+      if (targetElList) {
+        targetElList[targetElIndex].classList.remove('__drag-select');
+      }
+      // 添加本次的效果
+      el.classList.add('__drag-select');
+      alterSelectedCom(el.dataset.indexPath, compoList);
+      // 赋值新的 targetElList 和 targetElIndex
+      targetElList = elList;
+      targetElIndex = 0;
+      // 记录新的已操作元素标记
+      clickMarkNumberBefore = clickMarkNumber;
+    }
   }
 
   return {
     selectedCom: globalProperties.selectedCom,
-    alterSelectedCom,
     handleSelectedClass
   };
 }

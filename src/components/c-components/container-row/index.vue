@@ -6,12 +6,7 @@
       :data-index-path="`${indexPath}-${index}`"
     >
       <template v-if="item.compo">
-        <component
-          :is="item.compo"
-          :compoStates="item.compoStates"
-          :compoActions="item.compoActions"
-          @click.capture="alterSelectedCom(item)"
-        ></component>
+        <component :is="item.compo" :compoStates="item.compoStates" :compoActions="item.compoActions"></component>
         <span class="--actions">
           <n-tooltip :show-arrow="false" trigger="hover">
             <template #trigger>
@@ -33,7 +28,6 @@
 import { ref, inject, watchEffect } from 'vue';
 import { NIcon, NTooltip } from 'naive-ui';
 import { DeleteFilled } from '@vicons/material';
-import useSelectedComAction from '@/effects/useSelectedComAction';
 
 const props = defineProps({
   compoStates: {},
@@ -50,8 +44,6 @@ watchEffect(() => {
     rowsCompo.value = props.__slot__.length ? [...props.__slot__] : [{}];
   }
 });
-
-const { alterSelectedCom } = useSelectedComAction();
 
 function removeCompo(index) {
   props.__slot__.splice(index, 1);

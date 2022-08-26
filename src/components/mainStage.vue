@@ -5,7 +5,7 @@
       v-drop="handleDropOnContainer"
       @dragenter="handleDragEnter"
       @dragleave="handleDragLeave"
-      @click="handleSelectedClass"
+      @click="handleSelectedClass($event, compoListWillRender)"
     >
       <n-scrollbar style="max-height: calc(100vh - 42px)">
         <n-watermark
@@ -33,7 +33,6 @@
             :compoActions="item.compoActions"
             :__slot__="item.__slot__"
             :indexPath="index"
-            @click.capture="alterSelectedCom(item)"
           ></component>
           <span class="--actions">
             <n-tooltip :show-arrow="false" trigger="hover">
@@ -74,7 +73,7 @@ const compoListWillRender = inject('compoListWillRender');
 const isProd = inject('isProd');
 
 const { toggleDragClass, putDragElement } = useDragActions();
-const { alterSelectedCom, handleSelectedClass } = useSelectedComAction();
+const { handleSelectedClass } = useSelectedComAction();
 
 /**
  * drop事件处理器
@@ -128,6 +127,7 @@ function removeCompo(index) {
 .main-stage {
   height: 100%;
   flex: 1;
+  user-select: none;
   .__drag-wrapper--on-stage {
     position: relative;
     padding: 0 8px;

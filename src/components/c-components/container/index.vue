@@ -16,7 +16,6 @@
         :compoActions="selfData[index].compoActions"
         :__slot__="selfData[index].__slot__"
         :indexPath="`${indexPath}-${index}`"
-        @click.capture="alterSelectedCom(selfData[index])"
       ></component>
       <div v-else-if="!isProd">拖拽到多列容器内</div>
     </div>
@@ -24,7 +23,6 @@
 </template>
 
 <script setup>
-import useSelectedComAction from '@/effects/useSelectedComAction';
 import { ref, watchEffect, onBeforeMount, onMounted, onUnmounted, inject, computed, isReadonly } from 'vue';
 import useLifecycleHook from '@/effects/useLifecycleHook';
 
@@ -53,8 +51,6 @@ const resolveWidth = index => {
   const itemSpan = props.compoStates.spanList[index] || 24 / props.compoStates.colsCount;
   return `calc((100% - ${gap}px) / 24 * ${itemSpan})`;
 };
-
-const { alterSelectedCom } = useSelectedComAction();
 
 const { useOnBeforeMount, useOnMounted, useOnUnmounted } = useLifecycleHook(props.compoActions);
 
