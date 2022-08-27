@@ -13,7 +13,7 @@ export default function (options = {}) {
 
   function alterSelectedCom(indexPath, compoList) {
     // debugger;
-    const [_noUse, targetCompo] = resolveElIndexPath(indexPath.split('-').slice(0, -1), compoList);
+    const [_noUse, targetCompo] = resolveElIndexPath(indexPath.split('-'), compoList);
     if (targetCompo) globalProperties.selectedCom.value = targetCompo;
   }
 
@@ -30,35 +30,40 @@ export default function (options = {}) {
     // 判断当前的clickMarkNumber是否和上次点击过的相同
     if (clickMarkNumber === clickMarkNumberBefore) {
       // 相同，说明为同一元素
-      // 判断上次点击的索引是否为列表最后一个，如果是，则此次操作的索引值应重置为0，否则，将上次操作的索引加1取后面一位。
-      const index = targetElIndex === targetElList.length - 1 ? 0 : targetElIndex + 1;
-      // 移除上次的效果
-      targetElList[targetElIndex].classList.remove('__drag-select');
-      // 添加本次的效果
-      targetElList[index].classList.add('__drag-select');
-      alterSelectedCom(targetElList[index].dataset.indexPath, compoList);
-      // 将操作后的索引赋值
-      targetElIndex = index;
+      // debugger;
+      if (targetElList) {
+        // 判断上次点击的索引是否为列表最后一个，如果是，则此次操作的索引值应重置为0，否则，将上次操作的索引加1取后面一位。
+        const index = targetElIndex === targetElList.length - 1 ? 0 : targetElIndex + 1;
+        // 移除上次的效果
+        targetElList[targetElIndex].classList.remove('__drag-select');
+        // 添加本次的效果
+        targetElList[index].classList.add('__drag-select');
+        alterSelectedCom(targetElList[index].dataset.indexPath, compoList);
+        // 将操作后的索引赋值
+        targetElIndex = index;
+      }
     } else {
       // 不同，说明不是同一元素
       // 重新查询wrap元素列表
       const elList = findTargetEl(e.path, { findAll: true, filterRoot: true }).targetEl;
       // debugger;
-      // 重新查询后依然从第一个元素开始操作
-      const el = elList[0];
+      if (elList) {
+        // 重新查询后依然从第一个元素开始操作
+        const el = elList[0];
 
-      // 判断之前是否有添加过效果，如果有则移除
-      if (targetElList) {
-        targetElList[targetElIndex].classList.remove('__drag-select');
+        // 判断之前是否有添加过效果，如果有则移除
+        if (targetElList) {
+          targetElList[targetElIndex].classList.remove('__drag-select');
+        }
+        // 添加本次的效果
+        el.classList.add('__drag-select');
+        alterSelectedCom(el.dataset.indexPath, compoList);
+        // 赋值新的 targetElList 和 targetElIndex
+        targetElList = elList;
+        targetElIndex = 0;
+        // 记录这次点击的元素标识
+        clickMarkNumberBefore = clickMarkNumber;
       }
-      // 添加本次的效果
-      el.classList.add('__drag-select');
-      alterSelectedCom(el.dataset.indexPath, compoList);
-      // 赋值新的 targetElList 和 targetElIndex
-      targetElList = elList;
-      targetElIndex = 0;
-      // 记录新的已操作元素标记
-      clickMarkNumberBefore = clickMarkNumber;
     }
   }
 

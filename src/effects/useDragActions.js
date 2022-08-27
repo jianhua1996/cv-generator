@@ -12,9 +12,13 @@ const activeClass = '__drag-active';
 
 //  查找符合传入classList类名列表的元素
 export function findTargetEl(ePath, options = {}) {
-  const { classList = dragClassList, findAll, filterRoot } = options;
+  const { classList = [...dragClassList], findAll, filterRoot } = options;
 
   let targetEl; // Element | Array
+
+  if (findAll && filterRoot) {
+    classList.pop();
+  }
   // 遍历事件的触发元素列表（冒泡的顺序）
   for (let i = 0; i < ePath.length; i++) {
     // 遍历传入的类名列表
@@ -37,9 +41,7 @@ export function findTargetEl(ePath, options = {}) {
     // 当查找模式为查找全部时，也只匹配到main-stage这个元素为止，不再向上匹配
     if (ePath[i].classList.contains('main-stage')) break;
   }
-  if (filterRoot) {
-    targetEl.pop();
-  }
+
   return {
     targetEl // 此时返回的是一个数组
   };
@@ -50,7 +52,7 @@ export function resolveElIndexPath(indexPathList, targetList) {
   let targetCompo;
   indexPathList.forEach(index => {
     targetCompo = targetList[index];
-    targetList = targetCompo.__slot__ || [];
+    targetList = (targetCompo && targetCompo.__slot__) || [];
   });
   return [targetList, targetCompo];
 }
