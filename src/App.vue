@@ -121,8 +121,11 @@ onMounted(() => {
   box-sizing: border-box;
   flex-direction: column;
   .top {
-    line-height: 40px;
-    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    height: 40px;
+
     .btn-features {
       &:not(:last-of-type) {
         margin-right: 6px;
