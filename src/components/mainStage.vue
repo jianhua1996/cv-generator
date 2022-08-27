@@ -198,4 +198,12 @@ function removeCompo(index) {
     }
   }
 }
+
+.--suffix {
+  &::after {
+    content: '';
+    display: inline-block;
+    width: 1em;
+  }
+}
 </style>

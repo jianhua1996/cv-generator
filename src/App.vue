@@ -5,7 +5,7 @@
       <n-button type="error" @click="clearStageSnap(true)" class="btn-features"> 删除所有组件并清空缓存 </n-button>
       <n-button type="warning" @click="clearStageSnap()" class="btn-features"> 删除所有组件 </n-button>
       <n-button type="info" @click="saveStageSnap" class="btn-features"> 保存 </n-button>
-      <n-button type="info" @click="generatePDF" class="btn-features"> 生成pdf </n-button>
+      <n-button type="info" @click="generatePDF" :loading="generating" class="btn-features"> 生成pdf </n-button>
     </div>
     <div class="bottom">
       <div class="left">
@@ -38,6 +38,8 @@ const compoListWillRender = ref([]); // 主舞台上的组件列表
 const isProd = ref(false);
 provide('compoListWillRender', compoListWillRender);
 provide('isProd', isProd);
+
+const generating = ref(false);
 
 const { saveComToStore, loadComFromStore, clearStoreCom } = useStoreComActions();
 
@@ -73,6 +75,7 @@ function clearStageSnap(clearLocal = false) {
 }
 
 function generatePDF() {
+  generating.value = true;
   isProd.value = true;
   nextTick().then(() => {
     const el = document.querySelector('.n-scrollbar-content');
@@ -81,9 +84,9 @@ function generatePDF() {
       scale: 1.5,
       cacheBust: true,
       filter: el => {
-        if (el.classList && el.classList.contains('n-tag')) {
-          // 去掉框架里带的border
-          el.style.setProperty('--n-border', '');
+        if (el.tagName && el.tagName.toLowerCase() === 'img' && !el.getAttribute('src')) {
+          // 过滤掉没有src的图片元素
+          return false;
         }
         return true;
       }
@@ -99,6 +102,7 @@ function generatePDF() {
       })
       .finally(() => {
         isProd.value = false;
+        generating.value = false;
       });
   });
 }

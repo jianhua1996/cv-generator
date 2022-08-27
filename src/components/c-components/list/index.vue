@@ -15,7 +15,7 @@
           @blur="handleEditFinish"
         >
         </n-input>
-        <span v-else class="tag">{{ item.content }}</span>
+        <span v-else class="tag --suffix">{{ item.content }}</span>
       </div>
       <n-icon
         v-if="!showEdit(index) && !isProd"
@@ -157,11 +157,6 @@ onUnmounted(() => {
     font-size: 18px;
     font-weight: bold;
     .tag {
-      &::after {
-        content: '';
-        display: inline-block;
-        width: 1em;
-      }
     }
   }
   &.--content {

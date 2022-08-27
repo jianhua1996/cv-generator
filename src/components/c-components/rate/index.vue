@@ -1,7 +1,7 @@
 <template>
   <div class="rate-container">
     <div class="rate-item-wrapper" :style="customStyle" v-for="(item, index) in compoStates.rateList" :key="index">
-      <span :style="{ margin: '0 1em 0 0.5em', fontWeight: 'bold', ...customStyle }">
+      <span :style="{ margin: '0 0.5em', fontWeight: 'bold', ...customStyle }" class="--suffix">
         {{ item.title }}
       </span>
       <n-rate v-model:value="item.rate" :color="compoStates.iconColor">
