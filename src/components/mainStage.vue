@@ -65,7 +65,7 @@ import useSelectedComAction from '@/effects/useSelectedComAction';
 
 const waterMark = reactive({
   show: true,
-  content: '简易低代码平台demo'
+  content: '简历生成器'
 }); // 水印配置
 
 // 注入组件列表数据
@@ -159,7 +159,7 @@ function removeCompo(index) {
     }
   }
   :deep(.n-scrollbar-content) {
-    padding-bottom: 100px;
+    margin-bottom: 100px;
   }
 }
 
@@ -178,7 +178,7 @@ function removeCompo(index) {
     border: 1px dotted rgba(0, 0, 0, 0.3);
   }
   &.--prodction-mode {
-    border: none;
+    border: 1px dotted rgba(0, 0, 0, 0);
   }
 }
 .__drag-active {

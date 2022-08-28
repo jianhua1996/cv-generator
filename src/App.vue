@@ -78,6 +78,7 @@ function generatePDF() {
   generating.value = true;
   isProd.value = true;
   nextTick().then(() => {
+    // debugger;
     const el = document.querySelector('.n-scrollbar-content');
     const conf = {
       bgcolor: '#fff',
