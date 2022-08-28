@@ -187,13 +187,13 @@ function removeCompo(index) {
 .__drag-select {
   &.--development-mode {
     box-shadow: inset 2px 2px rgb(77, 77, 231), inset -2px -2px rgb(77, 77, 231);
-    .--actions {
+    > .--actions {
       display: flex !important;
     }
   }
   &.--prodction-mode {
     box-shadow: none;
-    .--actions {
+    > .--actions {
       display: none !important;
     }
   }
