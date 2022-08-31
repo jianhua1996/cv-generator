@@ -7,7 +7,10 @@ export default {
   compoStates: {
     listStyle: 'type3',
     listColor: '#4D4DE7FF',
-    listData: [{ content: '这是标题' }, { content: '这是一段正文这是一段正文这是一段正文这是一段正文这是一段正文' }]
+    listData: [
+      { isTitle: true, content: '这是标题' },
+      { isTitle: false, content: '这是一段正文这是一段正文这是一段正文这是一段正文这是一段正文' }
+    ]
   },
   defineStates: markRaw([
     {

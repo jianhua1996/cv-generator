@@ -1,8 +1,8 @@
 <template>
   <div class="">
     <div class="list-item-wrapper" v-for="(item, index) in listData">
-      <div :class="['tag-content', isTitle(index) ? '--title' : '--content']">
-        <n-icon :color="compoStates.listColor" style="margin-right: 1em" v-if="isTitle(index)">
+      <div :class="['tag-content', item.isTitle ? '--title' : '--content']">
+        <n-icon :color="compoStates.listColor" style="margin-right: 1em" v-if="item.isTitle">
           <component :is="renderIcon" />
         </n-icon>
         <n-input
@@ -26,15 +26,19 @@
       </n-icon>
     </div>
     <div class="add-part">
-      <n-input
-        v-if="showAdd()"
-        type="textarea"
-        :autosize="{ minRows: 1, maxRows: 3 }"
-        placeholder=""
-        @keydown.enter.prevent="handleAddFinish"
-        @blur="handleAddFinish"
-      >
-      </n-input>
+      <template v-if="showAdd()">
+        <n-radio-group v-model:value="addType" name="添加内容类型" size="small">
+          <n-radio label="添加标题" value="addTitle" />
+          <n-radio label="添加段落" value="addContent" />
+        </n-radio-group>
+        <n-input
+          type="textarea"
+          :autosize="{ minRows: 1, maxRows: 3 }"
+          placeholder="输入内容，按回车键进行确认，按Esc键取消"
+          @keydown="handleAddFinish"
+        >
+        </n-input>
+      </template>
       <n-icon v-if="!showAdd() && !isProd" size="22" style="cursor: pointer" @click="handleAdd">
         <AddCircleOutlineTwotone />
       </n-icon>
@@ -44,7 +48,7 @@
 
 <script setup>
 import { ref, onBeforeMount, onMounted, onUnmounted, inject } from 'vue';
-import { NIcon, NInput } from 'naive-ui';
+import { NIcon, NInput, NRadioGroup, NRadio } from 'naive-ui';
 import {
   FilterVintageOutlined,
   EmergencyOutlined,
@@ -66,9 +70,7 @@ const listData = ref([]);
 const currentItem = ref(null);
 const addAction = ref(null);
 
-const isTitle = index => {
-  return index % 2 === 0;
-};
+const addType = ref('addTitle');
 
 const showEdit = index => {
   return currentItem.value === index;
@@ -83,7 +85,7 @@ function handleEdit(index) {
 }
 
 function handleEditFinish(evt) {
-  currentItem.value = null;
+  if (typeof currentItem.value === 'number') currentItem.value = null;
 }
 
 function handleAdd() {
@@ -91,12 +93,17 @@ function handleAdd() {
 }
 
 function handleAddFinish(evt) {
-  const { target } = evt;
-  if (addAction.value) {
-    listData.value.push({
-      content: target.value
-    });
+  const { target, key } = evt;
+  if (addAction.value && ['Enter', 'Escape'].includes(key)) {
+    if (key === 'Enter') {
+      listData.value.push({
+        isTitle: addType.value === 'addTitle',
+        content: target.value
+      });
+    }
+
     addAction.value = null;
+    evt.preventDefault();
   }
 }
 
@@ -149,6 +156,11 @@ onUnmounted(() => {
       right: 0;
       word-break: break-all;
     }
+    .n-input__placeholder {
+      padding: 0;
+      font-size: 16px;
+      color: #917f7f85;
+    }
   }
 }
 .tag-content {
@@ -156,19 +168,21 @@ onUnmounted(() => {
   &.--title {
     font-size: 18px;
     font-weight: bold;
+    line-height: 1.5em;
+    margin: 1em 0;
     .tag {
     }
   }
   &.--content {
     font-size: 16px;
-    line-height: 1.5em;
+    line-height: 1.55em;
     text-indent: 36px;
   }
 }
 .add-part {
-  height: 30px;
-  line-height: 30px;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  line-height: 30px;
+  padding-bottom: 0.5em;
 }
 </style>
