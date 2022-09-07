@@ -37,7 +37,7 @@ onUnmounted(() => {
 </script>
 <style lang="scss" scoped>
 .c-header {
-  margin: 0.55em 0;
+  margin: 12px 0;
   word-break: break-all;
   display: flex;
   align-items: center;

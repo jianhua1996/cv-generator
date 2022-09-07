@@ -23,7 +23,7 @@
                 <n-switch v-if="item.subType === 'switch'" v-model:value="compoStates[`${item.prop.swithValue}`]" />
                 <n-input-number
                   v-model:value="compoStates[`${item.colName}`]"
-                  :disabled="!compoStates[`${item.prop.swithValue}`]"
+                  :disabled="item.prop.swithValue ? !compoStates[`${item.prop.swithValue}`] : false"
                   :step="item.prop.step"
                   :min="item.prop.min"
                   :max="item.prop.max"
