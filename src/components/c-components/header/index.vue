@@ -15,11 +15,11 @@ const props = defineProps({
 const customStyle = computed(() => {
   return {
     color: props.compoStates.color,
-    textAlign: props.compoStates.align,
+    justifyContent: props.compoStates.align,
     fontWeight: props.compoStates.isBold ? 'bold' : 'normal',
     fontSize: `${props.compoStates.fontSize}px`,
     backgroundColor: props.compoStates.bgColor,
-    textDecoration: `${props.compoStates.decoration} ${props.compoStates.color}`
+    height: props.compoStates.useHeight ? (props.compoStates.height ? `${props.compoStates.height}px` : 'auto') : 'auto'
   };
 });
 
@@ -39,6 +39,7 @@ onUnmounted(() => {
 .c-header {
   margin: 0.55em 0;
   word-break: break-all;
-  text-underline-position: under;
+  display: flex;
+  align-items: center;
 }
 </style>

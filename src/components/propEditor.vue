@@ -20,8 +20,10 @@
                 <n-select v-model:value="compoStates[`${item.colName}`]" :options="item.prop.options" />
               </template>
               <template v-else-if="item.type === 'inputNumber'">
+                <n-switch v-if="item.subType === 'switch'" v-model:value="compoStates[`${item.prop.swithValue}`]" />
                 <n-input-number
                   v-model:value="compoStates[`${item.colName}`]"
+                  :disabled="!compoStates[`${item.prop.swithValue}`]"
                   :step="item.prop.step"
                   :min="item.prop.min"
                   :max="item.prop.max"

@@ -21,7 +21,8 @@ const customStyle = computed(() => {
   return {
     width: `${props.compoStates.width}px`,
     height: `${props.compoStates.height}px`,
-    objectFit: props.compoStates.fitStyle
+    objectFit: props.compoStates.fitStyle,
+    borderRadius: `${props.compoStates.imageRadius}%`
   };
 });
 </script>

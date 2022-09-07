@@ -8,7 +8,8 @@ export default {
     fileList: [],
     width: 100,
     height: 100,
-    fitStyle: ''
+    fitStyle: '',
+    imageRadius: 50
   },
   defineStates: markRaw([
     {
@@ -55,6 +56,17 @@ export default {
             value: ''
           }
         ]
+      }
+    },
+    {
+      label: '图片圆角(0~50)',
+      colName: 'imageRadius',
+      type: 'inputNumber',
+      prop: {
+        step: 1,
+        min: 0,
+        max: 50,
+        precision: 0
       }
     }
   ]),

@@ -11,7 +11,8 @@ export default {
     color: '#4D4DE7FF',
     bgColor: '#DDDDDD00',
     align: 'center',
-    decoration: ''
+    height: 0,
+    useHeight: false
   },
   defineStates: markRaw([
     {
@@ -25,8 +26,8 @@ export default {
       type: 'range',
       prop: {
         step: 1,
-        min: 16,
-        max: 36,
+        min: 20,
+        max: 34,
         precision: 0
       }
     },
@@ -48,7 +49,7 @@ export default {
         options: [
           {
             label: '居左',
-            value: 'left'
+            value: 'flex-start'
           },
           {
             label: '居中',
@@ -56,7 +57,7 @@ export default {
           },
           {
             label: '居右',
-            value: 'right'
+            value: 'flex-end'
           }
         ]
       }
@@ -67,28 +68,15 @@ export default {
       type: 'colorPicker'
     },
     {
-      label: '文字修饰',
-      colName: 'decoration',
-      type: 'select',
+      label: '自定义高度',
+      colName: 'height',
+      type: 'inputNumber',
+      subType: 'switch',
       prop: {
-        options: [
-          {
-            label: '下划线',
-            value: 'underline'
-          },
-          {
-            label: '波浪线',
-            value: 'underline wavy'
-          },
-          {
-            label: '删除线',
-            value: 'line-through'
-          },
-          {
-            label: '无效果',
-            value: ''
-          }
-        ]
+        swithValue: 'useHeight',
+        step: 1,
+        min: 0,
+        max: 300
       }
     }
   ]),
