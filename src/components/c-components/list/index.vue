@@ -10,7 +10,7 @@
           type="textarea"
           :autosize="{ minRows: 1 }"
           placeholder=""
-          v-model:value="item.content"
+          :default-value="item.content"
           @keydown.enter.prevent="handleEditFinish"
           @blur="handleEditFinish"
         >
@@ -86,7 +86,10 @@ function handleEdit(index) {
 }
 
 function handleEditFinish(evt) {
-  if (typeof currentItem.value === 'number') currentItem.value = null;
+  if (typeof currentItem.value === 'number') {
+    listData.value[currentItem.value].content = evt.target.value;
+    currentItem.value = null;
+  }
 }
 
 function handleAdd() {
