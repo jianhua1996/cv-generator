@@ -50,10 +50,11 @@
 import { ref, onBeforeMount, onMounted, onUnmounted, inject } from 'vue';
 import { NIcon, NInput, NRadioGroup, NRadio } from 'naive-ui';
 import {
-  FilterVintageOutlined,
-  EmergencyOutlined,
-  GradeRound,
-  HiveTwotone,
+  EcoTwotone,
+  EmergencyTwotone,
+  GradeTwotone,
+  ApiTwotone,
+  AutoAwesomeTwotone,
   EditFilled,
   AddCircleOutlineTwotone
 } from '@vicons/material';
@@ -111,13 +112,15 @@ function renderIcon() {
   const type = props.compoStates.listStyle;
   switch (type) {
     case 'type1':
-      return <FilterVintageOutlined />;
+      return <EcoTwotone />;
     case 'type2':
-      return <EmergencyOutlined />;
+      return <EmergencyTwotone />;
     case 'type3':
-      return <GradeRound />;
+      return <GradeTwotone />;
     case 'type4':
-      return <HiveTwotone />;
+      return <ApiTwotone />;
+    case 'type5':
+      return <AutoAwesomeTwotone />;
   }
 }
 
@@ -171,12 +174,16 @@ onUnmounted(() => {
     line-height: 1.5em;
     margin: 1em 0;
     .tag {
+      color: v-bind('props.compoStates.listTitleColor');
     }
   }
   &.--content {
     font-size: 16px;
     line-height: 1.55em;
     text-indent: 36px;
+    .tag {
+      color: v-bind('props.compoStates.listContentColor');
+    }
   }
 }
 .add-part {

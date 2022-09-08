@@ -5,12 +5,14 @@ export default {
   name: '列表',
   compo: markRaw(Compo),
   compoStates: {
-    listStyle: 'type3',
+    listStyle: 'type1',
     listColor: '#4D4DE7FF',
     listData: [
       { isTitle: true, content: '这是标题' },
       { isTitle: false, content: '这是一段正文这是一段正文这是一段正文这是一段正文这是一段正文' }
-    ]
+    ],
+    listTitleColor: '#333333FF',
+    listContentColor: '#333333FF'
   },
   defineStates: markRaw([
     {
@@ -34,6 +36,10 @@ export default {
           {
             label: '样式四',
             value: 'type4'
+          },
+          {
+            label: '样式五',
+            value: 'type5'
           }
         ]
       }
@@ -41,6 +47,16 @@ export default {
     {
       label: '列表图标颜色',
       colName: 'listColor',
+      type: 'colorPicker'
+    },
+    {
+      label: '标题文字颜色',
+      colName: 'listTitleColor',
+      type: 'colorPicker'
+    },
+    {
+      label: '段落文字颜色',
+      colName: 'listContentColor',
       type: 'colorPicker'
     }
   ]),
