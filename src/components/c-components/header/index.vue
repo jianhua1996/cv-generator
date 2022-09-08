@@ -19,7 +19,12 @@ const customStyle = computed(() => {
     fontWeight: props.compoStates.isBold ? 'bold' : 'normal',
     fontSize: `${props.compoStates.fontSize}px`,
     backgroundColor: props.compoStates.bgColor,
-    height: props.compoStates.useHeight ? (props.compoStates.height ? `${props.compoStates.height}px` : 'auto') : 'auto'
+    height: props.compoStates.useHeight
+      ? props.compoStates.height
+        ? `${props.compoStates.height}px`
+        : 'auto'
+      : 'auto',
+    borderBottom: `${props.compoStates.borderWidth}px solid ${props.compoStates.borderColor}`
   };
 });
 
@@ -37,7 +42,7 @@ onUnmounted(() => {
 </script>
 <style lang="scss" scoped>
 .c-header {
-  margin: 12px 0;
+  margin: 8px 0;
   word-break: break-all;
   display: flex;
   align-items: center;

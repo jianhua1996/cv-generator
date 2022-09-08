@@ -12,7 +12,9 @@ export default {
     bgColor: '#DDDDDD00',
     align: 'center',
     height: 0,
-    useHeight: false
+    useHeight: false,
+    borderColor: '#DDDDDDFF',
+    borderWidth: 1
   },
   defineStates: markRaw([
     {
@@ -26,8 +28,8 @@ export default {
       type: 'range',
       prop: {
         step: 1,
-        min: 20,
-        max: 34,
+        min: 16,
+        max: 32,
         precision: 0
       }
     },
@@ -78,6 +80,32 @@ export default {
         min: 0,
         max: 300
       }
+    },
+    {
+      label: '配置边框',
+      type: 'collapse',
+      collapse: [
+        {
+          title: '边框颜色',
+          value: {
+            colName: 'borderColor',
+            type: 'colorPicker'
+          }
+        },
+        {
+          title: '边框宽度',
+          value: {
+            colName: 'borderWidth',
+            type: 'inputNumber',
+            prop: {
+              step: 1,
+              min: 0,
+              max: 3,
+              precision: 0
+            }
+          }
+        }
+      ]
     }
   ]),
   compoActions: {},

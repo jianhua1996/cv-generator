@@ -10,69 +10,22 @@
           <div class="state-row" v-for="item in defineStates">
             <div class="top">{{ item.label }} ：</div>
             <div class="bottom">
-              <template v-if="item.type === 'input'">
-                <n-input v-model:value="compoStates[`${item.colName}`]" />
+              <template v-if="item.type === 'collapse'">
+                <n-switch v-if="item.control" v-model:value="compoStates[`${item.control}`]" />
+                <template v-if="item.control ? compoStates[`${item.control}`] : true">
+                  <n-collapse>
+                    <n-collapse-item
+                      v-for="(collapseItem, collapseIndex) in item.collapse"
+                      :title="collapseItem.title"
+                      :name="`${collapseItem.title}-${collapseIndex}`"
+                    >
+                      <propEditorCell :item="collapseItem.value" :compoStates="compoStates" />
+                    </n-collapse-item>
+                  </n-collapse>
+                </template>
               </template>
-              <template v-else-if="item.type === 'switch'">
-                <n-switch v-model:value="compoStates[`${item.colName}`]" />
-              </template>
-              <template v-else-if="item.type === 'select'">
-                <n-select v-model:value="compoStates[`${item.colName}`]" :options="item.prop.options" />
-              </template>
-              <template v-else-if="item.type === 'inputNumber'">
-                <n-switch v-if="item.subType === 'switch'" v-model:value="compoStates[`${item.prop.swithValue}`]" />
-                <n-input-number
-                  v-model:value="compoStates[`${item.colName}`]"
-                  :disabled="item.prop.swithValue ? !compoStates[`${item.prop.swithValue}`] : false"
-                  :step="item.prop.step"
-                  :min="item.prop.min"
-                  :max="item.prop.max"
-                  :precision="item.prop.precision"
-                />
-              </template>
-              <template v-else-if="item.type === 'textarea'">
-                <n-input
-                  v-model:value="compoStates[`${item.colName}`]"
-                  type="textarea"
-                  :autosize="{
-                    minRows: item.prop.minRows,
-                    maxRows: item.prop.maxRows
-                  }"
-                />
-              </template>
-              <template v-else-if="item.type === 'range'">
-                <n-slider
-                  v-model:value="compoStates[`${item.colName}`]"
-                  :step="item.prop.step"
-                  :min="item.prop.min"
-                  :max="item.prop.max"
-                />
-                <n-input-number
-                  v-model:value="compoStates[`${item.colName}`]"
-                  :step="item.prop.step"
-                  :min="item.prop.min"
-                  :max="item.prop.max"
-                  :precision="item.prop.precision"
-                  size="small"
-                />
-              </template>
-              <template v-else-if="item.type === 'colorPicker'">
-                <n-color-picker v-model:value="compoStates[`${item.colName}`]" :modes="['hex']" :show-preview="true" />
-              </template>
-              <template v-else-if="item.type === 'radioButton'">
-                <radioButtonGroup
-                  v-model:value="compoStates[`${item.colName}`]"
-                  :name="item.prop.groupName"
-                  :selections="item.prop.selections"
-                  v-model:spanList="compoStates[`${item.prop.spanList}`]"
-                />
-              </template>
-              <template v-else-if="item.type === 'imageUploader'">
-                <imageUploader v-model:files="compoStates[`${item.colName}`]" />
-              </template>
-              <template v-else-if="item.type === 'dynamicInput'">
-                <dynamicInput v-model:dynamicVal="compoStates[`${item.colName}`]" />
-              </template>
+
+              <propEditorCell v-else :item="item" :compoStates="compoStates" />
             </div>
           </div>
         </n-scrollbar>
@@ -99,25 +52,20 @@
 <script setup>
 import { EditNoteRound } from '@vicons/material';
 import { computed, ref } from 'vue';
-import imageUploader from './imageUploader.vue';
-import dynamicInput from './dynamicInput.vue';
-import radioButtonGroup from './radioButtonGroup.vue';
 import {
   NTabs,
   NTabPane,
-  NInput,
-  NColorPicker,
-  NSelect,
   NCard,
-  NSwitch,
-  NSlider,
-  NInputNumber,
   NList,
   NListItem,
   NModal,
   NButton,
-  NScrollbar
+  NScrollbar,
+  NCollapse,
+  NCollapseItem,
+  NSwitch
 } from 'naive-ui';
+import propEditorCell from './propEditorCell.vue';
 import useSelectedComAction from '@/effects/useSelectedComAction';
 
 const { selectedCom } = useSelectedComAction();
@@ -174,6 +122,14 @@ function createFunction() {
     width: 20px;
     height: 20px;
     cursor: pointer;
+  }
+
+  :deep(.n-collapse-item) {
+    margin: 0 !important;
+    .n-collapse-item__header,
+    .n-collapse-item__content-inner {
+      padding: 0 !important;
+    }
   }
 }
 </style>
