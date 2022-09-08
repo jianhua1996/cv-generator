@@ -11,8 +11,8 @@ export default {
         rate: 5
       }
     ],
-    fontColor: '#000000FF',
-    iconColor: '#F48E18FF'
+    fontColor: '#333333FF',
+    iconColor: '#4D4DE7FF'
   },
   defineStates: markRaw([
     {

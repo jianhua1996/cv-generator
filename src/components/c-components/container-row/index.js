@@ -4,8 +4,42 @@ import Compo from './index.vue';
 export default {
   name: '多行布局',
   compo: markRaw(Compo),
-  compoStates: {},
-  defineStates: markRaw([]),
+  compoStates: {
+    align: 'stretch',
+    bgColor: '#FFFFFF00'
+  },
+  defineStates: markRaw([
+    {
+      label: '纵向对齐',
+      colName: 'align',
+      type: 'select',
+      prop: {
+        options: [
+          {
+            label: '居左',
+            value: 'flex-start'
+          },
+          {
+            label: '居中',
+            value: 'center'
+          },
+          {
+            label: '居右',
+            value: 'flex-end'
+          },
+          {
+            label: '不设置',
+            value: 'stretch'
+          }
+        ]
+      }
+    },
+    {
+      label: '背景色',
+      colName: 'bgColor',
+      type: 'colorPicker'
+    }
+  ]),
   compoActions: {},
   defineActions: markRaw([
     {

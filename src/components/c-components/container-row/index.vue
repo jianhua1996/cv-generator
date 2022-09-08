@@ -1,5 +1,7 @@
 <template>
-  <div style="">
+  <div
+    :style="`display: flex; flex-direction: column; align-items: ${compoStates.align}; background-color: ${compoStates.bgColor}`"
+  >
     <div
       :class="['__drag-wrapper--of-container-row', isProd ? '--prodction-mode' : '--development-mode']"
       v-for="(item, index) in rowsCompo"

@@ -6,14 +6,14 @@ export default {
   compo: markRaw(Compo),
   compoStates: {
     value: '我是Header组件',
-    fontSize: 20,
+    fontSize: 18,
     isBold: true,
-    color: '#4D4DE7FF',
-    bgColor: '#DDDDDD00',
-    align: 'center',
+    color: '#333333FF',
+    bgColor: '#FFFFFF00',
+    align: 'flex-start',
     height: 0,
     useHeight: false,
-    borderColor: '#DDDDDDFF',
+    borderColor: '#FFFFFF00',
     borderWidth: 1
   },
   defineStates: markRaw([
