@@ -31,7 +31,8 @@ import { useLSWatcher } from 'next-vue-storage-watcher';
 import domtoimage from './static/dom-to-image';
 import { jsPDF } from 'jspdf';
 import useStoreComActions from '@/effects/useStoreComActions';
-import { cropImage } from '@/utils';
+import useObserver from '@/effects/useMutationObserver';
+import { cropImage, debounce } from '@/utils';
 
 const ls = useLSWatcher();
 
@@ -79,7 +80,6 @@ function generatePDF() {
   generating.value = true;
   isProd.value = true;
   nextTick().then(() => {
-    // debugger;
     const el = document.querySelector('.n-scrollbar-content');
     const conf = {
       bgcolor: '#fff',
@@ -90,12 +90,16 @@ function generatePDF() {
           // 过滤掉没有src的图片元素
           return false;
         }
+        if (el.classList && el.classList.contains('__page-split-line')) {
+          // 过滤掉分页参考线
+          return false;
+        }
         return true;
       }
     };
     domtoimage
       .toJpeg(el, conf)
-      .then(({ dataUrl, width, height }) => {
+      .then(async ({ dataUrl, width, height }) => {
         const doc = new jsPDF({ unit: 'px' });
         const docWidth = doc.internal.pageSize.getWidth(); // 文档宽度
         const docHeight = doc.internal.pageSize.getHeight(); // 文档高度
@@ -110,7 +114,7 @@ function generatePDF() {
           for (let i = 0; i < page; i++) {
             if (i !== 0) doc.addPage();
             const restHeight = contentHeight - i * docHeight >= docHeight ? docHeight : contentHeight - i * docHeight;
-            const url = cropImage({
+            const url = await cropImage({
               url: dataUrl,
               y: i * docHeight,
               width: docWidth,
@@ -133,7 +137,35 @@ function generatePDF() {
   });
 }
 
+function observeContentHeight() {
+  const targetEl = document.querySelector('.n-scrollbar-content');
+
+  const doc = new jsPDF({ unit: 'px' });
+  const radio = doc.internal.pageSize.getWidth() / targetEl.scrollWidth; // 比值
+  const height = doc.internal.pageSize.getHeight() / radio; // 页面上的每页高度
+
+  const observerHandler = debounce(function () {
+    const contentHeight = targetEl.scrollHeight;
+    // debugger;
+    if (contentHeight > height) {
+      const num = parseInt(contentHeight / height);
+      const splitLine = targetEl.querySelectorAll('.__page-split-line');
+      if (splitLine.length && splitLine.length === num) return;
+      for (let i = 0; i < num; i++) {
+        const div = document.createElement('div');
+        div.className = '__page-split-line';
+        div.style.top = `${(i + 1) * height}px`;
+        targetEl.appendChild(div);
+      }
+    }
+  });
+
+  const { startObserve } = useObserver(targetEl, observerHandler);
+  startObserve();
+}
+
 onMounted(() => {
+  observeContentHeight();
   loadStageSnap();
 });
 </script>
@@ -170,6 +202,13 @@ onMounted(() => {
       flex: 1;
       background-color: #ddd;
     }
+  }
+  :deep(.__page-split-line) {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 0px;
+    border-bottom: 2px solid red;
   }
 }
 </style>

@@ -18,7 +18,7 @@
         <span v-else class="tag --suffix">{{ item.content }}</span>
       </div>
       <n-icon
-        v-if="!showEdit(index) && !isProd"
+        :class="showEdit(index) || isProd ? '--invalid-mode' : ''"
         style="cursor: pointer; width: 1em; margin-left: 1.5em"
         @click="handleEdit(index)"
       >
@@ -39,7 +39,7 @@
         >
         </n-input>
       </template>
-      <n-icon v-if="!showAdd() && !isProd" size="22" style="cursor: pointer" @click="handleAdd">
+      <n-icon :class="showAdd() || isProd ? '--invalid-mode' : ''" size="22" style="cursor: pointer" @click="handleAdd">
         <AddCircleOutlineTwotone />
       </n-icon>
     </div>

@@ -160,6 +160,7 @@ function removeCompo(index) {
   }
   :deep(.n-scrollbar-content) {
     margin-bottom: 100px;
+    position: relative;
   }
 }
 
@@ -205,5 +206,9 @@ function removeCompo(index) {
     display: inline-block;
     width: 1em;
   }
+}
+.--invalid-mode {
+  visibility: hidden;
+  pointer-events: none;
 }
 </style>

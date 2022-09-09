@@ -21,7 +21,7 @@
           </n-icon>
         </span>
       </template>
-      <div v-else-if="!isProd">拖拽到多行容器内</div>
+      <div v-else>拖拽到多行容器内</div>
     </div>
   </div>
 </template>

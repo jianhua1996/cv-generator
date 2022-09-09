@@ -17,7 +17,7 @@
         :__slot__="selfData[index].__slot__"
         :indexPath="`${indexPath}-${index}`"
       ></component>
-      <div v-else-if="!isProd">拖拽到多列容器内</div>
+      <div v-else>拖拽到多列容器内</div>
     </div>
   </div>
 </template>

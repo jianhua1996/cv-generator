@@ -32,21 +32,34 @@ export function file2url(file) {
 
 export function cropImage(options = {}) {
   const { url, x = 0, y = 0, width, height, scale } = options;
-  // 加载图片
-  const image = new Image();
-  image.src = url;
-  // 创建canvas元素
-  const canvas = document.createElement('canvas');
-  // 设置canvas宽高
-  canvas.width = width * scale;
-  canvas.height = height * scale;
 
-  const ctx = canvas.getContext('2d');
-  // debugger;
-  ctx.drawImage(image, x * scale, y * scale, width * scale, height * scale, 0, 0, canvas.width, canvas.height);
+  return new Promise((resolve, reject) => {
+    // 加载图片
+    const image = new Image();
+    image.src = url;
+    image.onload = function () {
+      // 创建canvas元素
+      const canvas = document.createElement('canvas');
+      // 设置canvas宽高
+      canvas.width = width * scale;
+      canvas.height = height * scale;
 
-  // image.src = canvas.toDataURL('image/jpeg', 1.0);
-  // document.body.appendChild(image);
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(image, x * scale, y * scale, width * scale, height * scale, 0, 0, canvas.width, canvas.height);
 
-  return canvas.toDataURL('image/jpeg', 1.0);
+      resolve(canvas.toDataURL('image/jpeg', 1.0));
+    };
+    image.onerror = function () {
+      reject(new Error('图片加载错误!'));
+    };
+  });
+}
+
+export function debounce(fn, between = 1500) {
+  let executeTime;
+  return function (...params) {
+    if (executeTime && Date.now() - executeTime < between) return;
+    fn.apply(null, params);
+    executeTime = Date.now();
+  };
 }
