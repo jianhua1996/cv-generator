@@ -31,6 +31,7 @@ import { useLSWatcher } from 'next-vue-storage-watcher';
 import domtoimage from './static/dom-to-image';
 import { jsPDF } from 'jspdf';
 import useStoreComActions from '@/effects/useStoreComActions';
+import { cropImage } from '@/utils';
 
 const ls = useLSWatcher();
 
@@ -96,9 +97,33 @@ function generatePDF() {
       .toJpeg(el, conf)
       .then(({ dataUrl, width, height }) => {
         const doc = new jsPDF({ unit: 'px' });
-        const docWidth = doc.internal.pageSize.getWidth();
+        const docWidth = doc.internal.pageSize.getWidth(); // 文档宽度
+        const docHeight = doc.internal.pageSize.getHeight(); // 文档高度
+
         const radio = docWidth / width;
-        doc.addImage(dataUrl, 'JPEG', 0, 0, docWidth, height * radio);
+        const contentHeight = radio * height;
+
+        if (contentHeight > docHeight) {
+          // 多页
+          const exactly = contentHeight % docHeight === 0;
+          const page = exactly ? parseInt(contentHeight / docHeight) : parseInt(contentHeight / docHeight) + 1;
+          for (let i = 0; i < page; i++) {
+            if (i !== 0) doc.addPage();
+            const restHeight = contentHeight - i * docHeight >= docHeight ? docHeight : contentHeight - i * docHeight;
+            const url = cropImage({
+              url: dataUrl,
+              y: i * docHeight,
+              width: docWidth,
+              height: restHeight,
+              scale: 1 / radio
+            });
+            doc.addImage(url, 0, 0, docWidth, restHeight);
+          }
+        } else {
+          // 单页
+          doc.addImage(dataUrl, 0, 0, docWidth, contentHeight);
+        }
+
         doc.save('test.pdf');
       })
       .finally(() => {

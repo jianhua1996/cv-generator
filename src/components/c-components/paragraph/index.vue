@@ -42,6 +42,7 @@ onUnmounted(() => {
     padding: 8px 0.75em;
     margin: 0;
     font-size: 15px;
+    word-break: break-all;
   }
 }
 </style>
