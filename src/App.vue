@@ -208,7 +208,13 @@ onMounted(() => {
     left: 0;
     width: 100%;
     height: 0px;
-    border-bottom: 2px solid red;
+    border-bottom: 2px dashed #d03050;
+    font-size: 12px;
+    color: #d03050;
+    &::before {
+      content: '分页参考线';
+      position: absolute;
+    }
   }
 }
 </style>
