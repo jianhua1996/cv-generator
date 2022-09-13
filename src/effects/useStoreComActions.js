@@ -1,46 +1,47 @@
 import { reactive, getCurrentInstance } from 'vue';
 import originComList from '../components/c-components/index'; //  所有c-组件
+
+export function propertyIterator(obj, fn) {
+  try {
+    // 属性迭代器，根据传入的函数fn来对obj对象的每个字段进行单独处理和浅拷贝，返回一个新对象;
+    const tmpObj = {};
+
+    Object.keys(obj).forEach(propName => {
+      const targetVal = fn(obj, propName); // fn函数需要返回一个处理后的值 targetVal
+      tmpObj[propName] = targetVal; // 赋新值
+      if (propName == '__slot__') {
+        // 如果对象上有__slot__字段，说明组件是容器类型的组件，__slot__对应的值将是一个数组，需要对数组进行遍历，然后将数组内的每个对象调用propertyIterator进行递归处理
+        const slotList = tmpObj.__slot__.map(slot => {
+          if (slot) {
+            const o = propertyIterator(slot, fn);
+            return o;
+          }
+        });
+        tmpObj.__slot__ = slotList;
+      }
+    });
+    return tmpObj;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+export function loadComFromCache(compoName, loadCompoCache) {
+  if (loadCompoCache[compoName]) {
+    // 如果loadCompoCache中有缓存这个源组件内容，则直接取出
+    return loadCompoCache[compoName];
+  }
+  // 否则在源组件列表里查询
+  const compo = originComList.find(item => item.name === compoName);
+  // 然后缓存该名称和对应组件
+  loadCompoCache[compoName] = compo;
+  return compo;
+}
+
 export default function (options) {
   const { globalProperties } = getCurrentInstance().appContext.config;
   if (!globalProperties.loadCompoCache) {
     globalProperties.loadCompoCache = {};
-  }
-
-  function loadComFromCache(compoName) {
-    if (globalProperties.loadCompoCache[compoName]) {
-      // 如果loadCompoCache中有缓存这个源组件内容，则直接取出
-      return globalProperties.loadCompoCache[compoName];
-    }
-    // 否则在源组件列表里查询
-    const compo = originComList.find(item => item.name === compoName);
-    // 然后缓存该名称和对应组件
-    globalProperties.loadCompoCache[compoName] = compo;
-    return compo;
-  }
-
-  function propertyIterator(obj, fn) {
-    try {
-      // 属性迭代器，根据传入的函数fn来对obj对象的每个字段进行单独处理和浅拷贝，返回一个新对象;
-      const tmpObj = {};
-
-      Object.keys(obj).forEach(propName => {
-        const targetVal = fn(obj, propName); // fn函数需要返回一个处理后的值 targetVal
-        tmpObj[propName] = targetVal; // 赋新值
-        if (propName == '__slot__') {
-          // 如果对象上有__slot__字段，说明组件是容器类型的组件，__slot__对应的值将是一个数组，需要对数组进行遍历，然后将数组内的每个对象调用propertyIterator进行递归处理
-          const slotList = tmpObj.__slot__.map(slot => {
-            if (slot) {
-              const o = propertyIterator(slot, fn);
-              return o;
-            }
-          });
-          tmpObj.__slot__ = slotList;
-        }
-      });
-      return tmpObj;
-    } catch (e) {
-      console.error(e);
-    }
   }
 
   function saveComToStore(ls, comList) {
@@ -75,7 +76,7 @@ export default function (options) {
           const comObjCopy = propertyIterator(comObj, function (o, prop) {
             // 从源组件中加载compo、defineStates、defineActions这三个字段
             if (['compo', 'defineStates', 'defineActions'].includes(prop)) {
-              const srcCompo = loadComFromCache(o.name);
+              const srcCompo = loadComFromCache(o.name, globalProperties.loadCompoCache);
               return srcCompo[prop];
             }
             // 将compoStates、compoActions这两个字段设置为reactive

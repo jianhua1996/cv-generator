@@ -12,7 +12,6 @@ export default function (options = {}) {
   let clickMarkNumberBefore, targetElList, targetElIndex;
 
   function alterSelectedCom(indexPath, compoList) {
-    // debugger;
     const [_noUse, targetCompo] = resolveElIndexPath(indexPath.split('-'), compoList);
     if (targetCompo) globalProperties.selectedCom.value = targetCompo;
   }

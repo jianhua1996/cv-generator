@@ -6,6 +6,9 @@
       <n-button type="warning" @click="clearStageSnap()" class="btn-features"> 删除所有组件 </n-button>
       <n-button type="info" @click="saveStageSnap" class="btn-features"> 保存 </n-button>
       <n-button type="info" @click="generatePDF" :loading="generating" class="btn-features"> 生成pdf </n-button>
+      <n-button type="info" @click="handleExport" class="btn-features"> 导出数据 </n-button>
+      <n-button type="info" @click="handleImport" class="btn-features"> 导入数据 </n-button>
+      <input type="file" ref="fileEntry" accept=".json" style="display: none" @change="handleFile" />
     </div>
     <div class="bottom">
       <div class="left">
@@ -31,6 +34,7 @@ import { useLSWatcher } from 'next-vue-storage-watcher';
 import domtoimage from './static/dom-to-image';
 import { jsPDF } from 'jspdf';
 import useStoreComActions from '@/effects/useStoreComActions';
+import useImportExport from '@/effects/useImportExport';
 import useObserver from '@/effects/useMutationObserver';
 import { cropImage, debounce } from '@/utils';
 
@@ -43,7 +47,10 @@ provide('isProd', isProd);
 
 const generating = ref(false);
 
+const fileEntry = ref(null);
+
 const { saveComToStore, loadComFromStore, clearStoreCom } = useStoreComActions();
+const { exportCompoData, importCompoData } = useImportExport();
 
 function saveStageSnap() {
   saveComToStore(ls, compoListWillRender.value)
@@ -162,6 +169,30 @@ function observeContentHeight() {
 
   const { startObserve } = useObserver(targetEl, observerHandler);
   startObserve();
+}
+
+function handleExport() {
+  exportCompoData(compoListWillRender.value);
+}
+
+function handleImport() {
+  fileEntry.value.click();
+}
+
+function handleFile() {
+  const fileList = fileEntry.value.files;
+  if (fileList && fileList.length) {
+    const reader = new FileReader();
+    reader.onload = function (event) {
+      const { result } = event.target;
+      importCompoData(result)
+        .then(r => {
+          compoListWillRender.value = r;
+        })
+        .catch(e => {});
+    };
+    reader.readAsText(fileList[0]);
+  }
 }
 
 onMounted(() => {
